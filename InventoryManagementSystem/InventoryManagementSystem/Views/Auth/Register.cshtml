@@ -1,81 +1,150 @@
 @{
     ViewData["Title"] = "Register";
+    ViewData["UseFullWidthPage"] = true;
+    ViewData["BodyClass"] = "auth-body";
+
+    var postedUsername = Context.Request.HasFormContentType
+        ? Context.Request.Form["username"].ToString()
+        : string.Empty;
+    var postedEmail = Context.Request.HasFormContentType
+        ? Context.Request.Form["email"].ToString()
+        : string.Empty;
 }
 
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="card-title text-center mb-4">
-                        <i class="fas fa-user-plus"></i> Register
-                    </h2>
+<section class="auth-shell" aria-labelledby="auth-title">
+    <aside class="auth-visual" aria-label="Inventory account overview">
+        <div class="auth-brand">
+            <span class="auth-brand-mark">
+                <i class="fas fa-warehouse" aria-hidden="true"></i>
+            </span>
+            <span>Inventory System</span>
+        </div>
 
-                    <form asp-action="Register" method="post" novalidate>
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="auth-visual-copy">
+            <p class="auth-eyebrow">Team onboarding</p>
+            <h1>Create access that keeps every stock movement accountable.</h1>
+            <p>New users start with employee access so inventory workflows stay organized from day one.</p>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username *</label>
-                            <input type="text" name="username" class="form-control" placeholder="Choose a username" required />
-                            <small class="text-muted">Username must be unique</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password *</label>
-                            <input type="password" name="password" class="form-control" placeholder="At least 6 characters" required />
-                            <small class="text-muted">Password must be at least 6 characters</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Confirm Password *</label>
-                            <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm your password" required />
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100 mb-3">
-                            <i class="fas fa-user-check"></i> Register
-                        </button>
-                    </form>
-
-                    <hr />
-
-                    <p class="text-center">
-                        Already have an account?
-                        <a href="@Url.Action("Login")" class="text-decoration-none">Login here</a>
-                    </p>
-                </div>
+        <div class="auth-metrics" aria-label="Account highlights">
+            <div>
+                <strong>Employee</strong>
+                <span>Default role</span>
+            </div>
+            <div>
+                <strong>Unique</strong>
+                <span>Username and email</span>
+            </div>
+            <div>
+                <strong>Protected</strong>
+                <span>Password rules</span>
             </div>
         </div>
+    </aside>
+
+    <div class="auth-panel-wrap">
+        <div class="auth-card auth-card-register">
+            <div class="auth-card-header">
+                <span class="auth-card-icon">
+                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                </span>
+                <div>
+                    <p class="auth-kicker">Get started</p>
+                    <h2 id="auth-title">Create your account</h2>
+                </div>
+            </div>
+
+            <form class="auth-form" asp-action="Register" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger auth-validation" role="alert"></div>
+
+                <div class="auth-field">
+                    <label for="username">Username <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                        <input id="username"
+                               type="text"
+                               name="username"
+                               class="form-control"
+                               placeholder="Choose a username"
+                               value="@postedUsername"
+                               autocomplete="username"
+                               aria-describedby="username-help"
+                               required />
+                    </div>
+                    <small id="username-help">Use a unique username for this workspace.</small>
+                </div>
+
+                <div class="auth-field">
+                    <label for="email">Email <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                        <input id="email"
+                               type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               value="@postedEmail"
+                               autocomplete="email"
+                               required />
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label for="password">Password <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-key" aria-hidden="true"></i>
+                        <input id="password"
+                               type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="At least 6 characters"
+                               autocomplete="new-password"
+                               aria-describedby="password-help"
+                               minlength="6"
+                               required />
+                        <button class="auth-password-toggle"
+                                type="button"
+                                data-password-toggle
+                                aria-label="Show password"
+                                aria-controls="password">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <small id="password-help">Password must be at least 6 characters.</small>
+                </div>
+
+                <div class="auth-field">
+                    <label for="confirmPassword">Confirm Password <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                        <input id="confirmPassword"
+                               type="password"
+                               name="confirmPassword"
+                               class="form-control"
+                               placeholder="Confirm your password"
+                               autocomplete="new-password"
+                               minlength="6"
+                               required />
+                        <button class="auth-password-toggle"
+                                type="button"
+                                data-password-toggle
+                                aria-label="Show password"
+                                aria-controls="confirmPassword">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit">
+                    <span>Create account</span>
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Already have an account?
+                <a href="@Url.Action("Login")">Login</a>
+            </p>
+        </div>
     </div>
-</div>
-
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
-
-    .card-body {
-        background: white;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        border: none;
-    }
-
-    .btn-success:hover {
-        background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
-    }
-</style>
+</section>

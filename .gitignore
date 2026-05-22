@@ -1,3 +1,4 @@
 .vs/
 bin/
 obj/
+InventoryManagementSystem/App_Data/DataProtectionKeys/

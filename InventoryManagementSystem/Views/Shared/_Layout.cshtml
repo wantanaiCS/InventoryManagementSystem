@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InventoryManagementSystem.styles.css" asp-append-version="true" />
 </head>
-<body>
+@{
+    var useFullWidthPage = ViewData["UseFullWidthPage"] is bool value && value;
+    var bodyClass = ViewData["BodyClass"] as string ?? "";
+}
+<body class="@bodyClass">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -82,19 +86,31 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    @if (useFullWidthPage)
+    {
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
-
-    <footer class="border-top footer text-muted mt-5">
+    }
+    else
+    {
         <div class="container">
-            &copy; 2026 - Inventory Management System - 
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> | 
-            <a href="https://github.com/wantanaiCS/InventoryManagementSystem" target="_blank">GitHub</a>
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+    }
+
+    @if (!useFullWidthPage)
+    {
+        <footer class="border-top footer text-muted mt-5">
+            <div class="container">
+                &copy; 2026 - Inventory Management System -
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> |
+                <a href="https://github.com/wantanaiCS/InventoryManagementSystem" target="_blank">GitHub</a>
+            </div>
+        </footer>
+    }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

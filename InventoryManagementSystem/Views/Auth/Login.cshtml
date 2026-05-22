@@ -1,69 +1,105 @@
 @{
     ViewData["Title"] = "Login";
+    ViewData["UseFullWidthPage"] = true;
+    ViewData["BodyClass"] = "auth-body";
+
+    var postedUsername = Context.Request.HasFormContentType
+        ? Context.Request.Form["username"].ToString()
+        : string.Empty;
 }
 
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="card-title text-center mb-4">
-                        <i class="fas fa-lock"></i> Login
-                    </h2>
+<section class="auth-shell" aria-labelledby="auth-title">
+    <aside class="auth-visual" aria-label="Inventory system overview">
+        <div class="auth-brand">
+            <span class="auth-brand-mark">
+                <i class="fas fa-warehouse" aria-hidden="true"></i>
+            </span>
+            <span>Inventory System</span>
+        </div>
 
-                    <form asp-action="Login" method="post" novalidate>
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div class="auth-visual-copy">
+            <p class="auth-eyebrow">Secure access</p>
+            <h1>Control stock, orders, and team access from one workspace.</h1>
+            <p>Sign in to keep inventory decisions accurate, visible, and ready for daily operations.</p>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username *</label>
-                            <input type="text" name="username" class="form-control" placeholder="Enter your username" required />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password *</label>
-                            <input type="password" name="password" class="form-control" placeholder="Enter your password" required />
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </form>
-
-                    <hr />
-
-                    <p class="text-center">
-                        Don't have an account?
-                        <a href="@Url.Action("Register")" class="text-decoration-none">Register here</a>
-                    </p>
-                </div>
+        <div class="auth-metrics" aria-label="System highlights">
+            <div>
+                <strong>Real-time</strong>
+                <span>Product tracking</span>
+            </div>
+            <div>
+                <strong>Role based</strong>
+                <span>Team access</span>
+            </div>
+            <div>
+                <strong>Audit ready</strong>
+                <span>Transaction history</span>
             </div>
         </div>
+    </aside>
+
+    <div class="auth-panel-wrap">
+        <div class="auth-card">
+            <div class="auth-card-header">
+                <span class="auth-card-icon">
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+                </span>
+                <div>
+                    <p class="auth-kicker">Welcome back</p>
+                    <h2 id="auth-title">Login to your account</h2>
+                </div>
+            </div>
+
+            <form class="auth-form" asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger auth-validation" role="alert"></div>
+
+                <div class="auth-field">
+                    <label for="username">Username <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                        <input id="username"
+                               type="text"
+                               name="username"
+                               class="form-control"
+                               placeholder="Enter your username"
+                               value="@postedUsername"
+                               autocomplete="username"
+                               required />
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label for="password">Password <span>*</span></label>
+                    <div class="auth-input">
+                        <i class="fas fa-key" aria-hidden="true"></i>
+                        <input id="password"
+                               type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required />
+                        <button class="auth-password-toggle"
+                                type="button"
+                                data-password-toggle
+                                aria-label="Show password"
+                                aria-controls="password">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit">
+                    <span>Login</span>
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="@Url.Action("Register")">Create account</a>
+            </p>
+        </div>
     </div>
-</div>
-
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
-
-    .card-body {
-        background: white;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-</style>
+</section>
