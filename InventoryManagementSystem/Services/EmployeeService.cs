@@ -111,6 +111,7 @@ namespace InventoryManagementSystem.Services
             var query = Query(false)
                 .Include(e => e.User)!.ThenInclude(u => u!.Role)
                 .Include(e => e.Department)
+                .Where(e => e.ApprovalStatus == "Approved")
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
@@ -151,6 +152,9 @@ namespace InventoryManagementSystem.Services
 
         public async Task AddEmployeeAsync(Employee employee, IEnumerable<int> categoryIds, int actingUserId)
         {
+            employee.RegistrationSource = "Admin";
+            employee.ApprovalStatus = "Approved";
+            employee.IsActive = true;
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
             await SetCategoryAssignmentsAsync(employee.EmployeeId, categoryIds);
@@ -218,7 +222,9 @@ namespace InventoryManagementSystem.Services
                 DepartmentId = model.DepartmentId,
                 ReportsToEmployeeId = model.ReportsToEmployeeId,
                 Shift = model.Shift,
-                IsActive = true
+                IsActive = true,
+                RegistrationSource = "Admin",
+                ApprovalStatus = "Approved"
             };
 
             await AddEmployeeAsync(employee, model.CategoryIds, actingUserId);
@@ -252,6 +258,89 @@ namespace InventoryManagementSystem.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<(bool Success, string? Error)> ApplySelfRegistrationAsync(int userId, EmployeeSelfRegisterViewModel model)
+        {
+            if (await GetEmployeeByUserIdAsync(userId) != null)
+                return (false, "You already have an employee profile.");
+
+            var pending = await _context.Employees.IgnoreQueryFilters()
+                .AnyAsync(e => e.UserId == userId && e.ApprovalStatus == "Pending" && !e.IsDeleted);
+            if (pending)
+                return (false, "Your application is already pending admin approval.");
+
+            var employee = new Employee
+            {
+                UserId = userId,
+                FullName = model.FullName,
+                Position = model.Position,
+                HireDate = model.HireDate,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                DepartmentId = model.DepartmentId,
+                Shift = model.Shift,
+                IsActive = false,
+                RegistrationSource = "SelfService",
+                ApprovalStatus = "Pending"
+            };
+
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+            await _notificationService.NotifyAdminsAsync("Employee registration pending",
+                $"{model.FullName} submitted a self-registration request.", "warning");
+            return (true, null);
+        }
+
+        public async Task<IReadOnlyList<Employee>> GetPendingApprovalsAsync()
+        {
+            return await _context.Employees.IgnoreQueryFilters()
+                .Include(e => e.User)
+                .Include(e => e.Department)
+                .Where(e => !e.IsDeleted && e.ApprovalStatus == "Pending")
+                .OrderBy(e => e.HireDate)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task ApproveEmployeeAsync(int employeeId, int actingUserId)
+        {
+            var employee = await _context.Employees.IgnoreQueryFilters()
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(e => e.EmployeeId == employeeId)
+                ?? throw new InvalidOperationException("Employee not found");
+
+            employee.ApprovalStatus = "Approved";
+            employee.IsActive = true;
+            if (employee.User != null) employee.User.IsActive = true;
+            await _context.SaveChangesAsync();
+            await _auditService.LogAsync(actingUserId, "APPROVE", "Employees", employeeId);
+
+            if (employee.User != null)
+            {
+                await _notificationService.CreateAsync(employee.UserId, "Registration approved",
+                    "Your employee profile has been approved. You can now use warehouse features.", "success");
+            }
+        }
+
+        public async Task RejectEmployeeAsync(int employeeId, int actingUserId, string? reason = null)
+        {
+            var employee = await _context.Employees.IgnoreQueryFilters()
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(e => e.EmployeeId == employeeId)
+                ?? throw new InvalidOperationException("Employee not found");
+
+            employee.ApprovalStatus = "Rejected";
+            employee.IsActive = false;
+            await _context.SaveChangesAsync();
+            await _auditService.LogAsync(actingUserId, "REJECT", "Employees", employeeId,
+                newValues: reason ?? "Rejected");
+
+            if (employee.User != null)
+            {
+                await _notificationService.CreateAsync(employee.UserId, "Registration rejected",
+                    reason ?? "Your employee registration was not approved. Contact HR.", "warning");
+            }
         }
 
         private async Task SyncUserActiveAsync(int userId, bool isActive)

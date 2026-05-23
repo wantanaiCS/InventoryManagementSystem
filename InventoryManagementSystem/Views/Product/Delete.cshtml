@@ -1,0 +1,15 @@
+@model InventoryManagementSystem.Models.Product
+@{
+    ViewData["Title"] = "ลบสินค้า";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger">ลบสินค้า</h2>
+    <p>@Model.ProductCode — @Model.ProductName (สต็อก: @Model.CurrentStock)</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        <button type="submit" class="btn btn-danger">ยืนยันลบ</button>
+        <a asp-action="Index" class="btn btn-secondary">ยกเลิก</a>
+    </form>
+</div>

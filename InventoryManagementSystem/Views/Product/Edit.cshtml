@@ -1,0 +1,53 @@
+@model InventoryManagementSystem.Models.Product
+@{
+    ViewData["Title"] = "แก้ไขสินค้า";
+    var categories = ViewBag.Categories as IEnumerable<InventoryManagementSystem.Models.Category> ?? Enumerable.Empty<InventoryManagementSystem.Models.Category>();
+}
+
+<div class="container mt-4">
+    <h2>แก้ไขสินค้าเฟอร์นิเจอร์</h2>
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="CreatedDate" />
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="ProductCode" class="form-label">รหัส *</label>
+                <input asp-for="ProductCode" class="form-control" />
+            </div>
+            <div class="col-md-8 mb-3">
+                <label asp-for="ProductName" class="form-label">ชื่อ *</label>
+                <input asp-for="ProductName" class="form-control" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">กลุ่ม *</label>
+            <select asp-for="CategoryId" class="form-select">
+                @foreach (var c in categories)
+                {
+                    <option value="@c.CategoryId">@c.CategoryName</option>
+                }
+            </select>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label asp-for="Material" class="form-label">วัสดุ</label><input asp-for="Material" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="Color" class="form-label">สี</label><input asp-for="Color" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="Unit" class="form-label">หน่วย</label><input asp-for="Unit" class="form-control" /></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label asp-for="WidthCm" class="form-label">กว้าง</label><input asp-for="WidthCm" type="number" step="0.1" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="DepthCm" class="form-label">ลึก</label><input asp-for="DepthCm" type="number" step="0.1" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="HeightCm" class="form-label">สูง</label><input asp-for="HeightCm" type="number" step="0.1" class="form-control" /></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label asp-for="Price" class="form-label">ราคา</label><input asp-for="Price" type="number" step="0.01" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="CurrentStock" class="form-label">สต็อก</label><input asp-for="CurrentStock" type="number" class="form-control" /></div>
+            <div class="col-md-4 mb-3"><label asp-for="WarehouseLocation" class="form-label">ที่เก็บ</label><input asp-for="WarehouseLocation" class="form-control" /></div>
+        </div>
+        <div class="mb-3"><label asp-for="Description" class="form-label">รายละเอียด</label><textarea asp-for="Description" class="form-control" rows="2"></textarea></div>
+        <button type="submit" class="btn btn-primary">บันทึก</button>
+        <a asp-action="Index" class="btn btn-secondary">ยกเลิก</a>
+    </form>
+</div>

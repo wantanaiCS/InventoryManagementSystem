@@ -1,0 +1,32 @@
+@model InventoryManagementSystem.Models.Product
+@{
+    ViewData["Title"] = Model.ProductName;
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+}
+
+<div class="container mt-4">
+    <h2><i class="fas fa-couch"></i> @Model.ProductName</h2>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6"><strong>รหัส:</strong> @Model.ProductCode</div>
+                <div class="col-md-6"><strong>กลุ่ม:</strong> @Model.Category?.CategoryName</div>
+                <div class="col-md-6 mt-2"><strong>วัสดุ / สี:</strong> @Model.Material / @Model.Color</div>
+                <div class="col-md-6 mt-2"><strong>ขนาด:</strong> @Model.DimensionDisplay</div>
+                <div class="col-md-6 mt-2"><strong>ราคา:</strong> ฿@Model.Price.ToString("N0")</div>
+                <div class="col-md-6 mt-2"><strong>สต็อก:</strong> @Model.CurrentStock @Model.Unit</div>
+                <div class="col-md-6 mt-2"><strong>ที่เก็บ:</strong> @Model.WarehouseLocation</div>
+                <div class="col-12 mt-2"><strong>รายละเอียด:</strong> @Model.Description</div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-3">
+        @if (isAdmin)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-warning">แก้ไข</a>
+            <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger">ลบ</a>
+        }
+        <a asp-controller="Inventory" asp-action="Receive" class="btn btn-success">รับเข้าสต็อก</a>
+        <a asp-action="Index" class="btn btn-secondary">กลับ</a>
+    </div>
+</div>

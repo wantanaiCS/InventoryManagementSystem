@@ -34,6 +34,9 @@ namespace InventoryManagementSystem.Services
                 .Include(e => e.CategoryAssignments)
                 .FirstOrDefaultAsync(e => e.UserId == userId && !e.IsDeleted);
 
+            if (employee != null && employee.ApprovalStatus != "Approved")
+                return (false, "Your employee profile is pending approval. Please wait for admin.");
+
             if (employee != null && employee.CategoryAssignments.Count > 0)
             {
                 var allowed = employee.CategoryAssignments.Any(a => a.CategoryId == product.CategoryId);

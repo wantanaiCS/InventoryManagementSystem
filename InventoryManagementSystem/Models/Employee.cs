@@ -16,6 +16,10 @@ namespace InventoryManagementSystem.Models
         public string Shift { get; set; } = "Morning";
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; }
+        /// <summary>Admin = HR/Admin สร้างเอง, SelfService = พนักงานสมัครเอง</summary>
+        public string RegistrationSource { get; set; } = "Admin";
+        /// <summary>Approved, Pending, Rejected</summary>
+        public string ApprovalStatus { get; set; } = "Approved";
 
         [ValidateNever]
         public User? User { get; set; }

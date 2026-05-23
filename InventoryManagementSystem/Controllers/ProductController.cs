@@ -4,6 +4,7 @@ using InventoryManagementSystem.Helpers;
 using InventoryManagementSystem.Models;
 using InventoryManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystem.Controllers
 {
@@ -14,6 +15,8 @@ namespace InventoryManagementSystem.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IAuditService _auditService;
 
+        private const string FurnitureProductLine = "Furniture";
+
         public ProductController(IProductService productService, ApplicationDbContext context, IAuditService auditService)
         {
             _productService = productService;
@@ -21,12 +24,27 @@ namespace InventoryManagementSystem.Controllers
             _auditService = auditService;
         }
 
-        public async Task<IActionResult> Index(string searchTerm = "")
+        private async Task<List<Category>> GetFurnitureCategoriesAsync()
+        {
+            return await _context.Categories
+                .Where(c => c.ProductLine == FurnitureProductLine)
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+        }
+
+        public async Task<IActionResult> Index(string searchTerm = "", int? categoryId = null)
         {
             var products = string.IsNullOrEmpty(searchTerm)
                 ? await _productService.GetAllProductsAsync()
                 : await _productService.SearchProductsAsync(searchTerm);
+
+            if (categoryId.HasValue)
+                products = products.Where(p => p.CategoryId == categoryId.Value);
+
             ViewBag.SearchTerm = searchTerm;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Categories = await GetFurnitureCategoriesAsync();
+            ViewBag.IsAdmin = HttpContext.Session.IsAdmin();
             return View(products);
         }
 
@@ -35,23 +53,27 @@ namespace InventoryManagementSystem.Controllers
             if (id == null) return NotFound();
             var product = await _productService.GetProductByIdAsync(id.Value);
             if (product == null) return NotFound();
+            ViewBag.IsAdmin = HttpContext.Session.IsAdmin();
             return View(product);
         }
 
         [Authorize("Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = _context.Categories.ToList();
-            return View();
+            ViewBag.Categories = await GetFurnitureCategoriesAsync();
+            return View(new Product { Unit = "ชิ้น", CurrentStock = 0 });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize("Admin")]
-        public async Task<IActionResult> Create([Bind("ProductCode,ProductName,CategoryId,Price,CurrentStock,Description")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductCode,ProductName,CategoryId,Price,CurrentStock,Description,Material,Color,WidthCm,DepthCm,HeightCm,Unit,WarehouseLocation")] Product product)
         {
             if (await _productService.GetProductByCodeAsync(product.ProductCode) != null)
-                ModelState.AddModelError("ProductCode", "Product Code already exists");
+                ModelState.AddModelError("ProductCode", "รหัสสินค้านี้มีในระบบแล้ว");
+
+            if (product.CategoryId <= 0)
+                ModelState.AddModelError("CategoryId", "กรุณาเลือกกลุ่มเฟอร์นิเจอร์");
 
             if (ModelState.IsValid)
             {
@@ -59,11 +81,11 @@ namespace InventoryManagementSystem.Controllers
                 await _productService.AddProductAsync(product);
                 var userId = HttpContext.Session.GetCurrentUserId() ?? 0;
                 await _auditService.LogAsync(userId, "CREATE", "Products", product.ProductId);
-                TempData["Success"] = "Product created.";
+                TempData["Success"] = "เพิ่มสินค้าเฟอร์นิเจอร์เรียบร้อยแล้ว";
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await GetFurnitureCategoriesAsync();
             return View(product);
         }
 
@@ -73,20 +95,20 @@ namespace InventoryManagementSystem.Controllers
             if (id == null) return NotFound();
             var product = await _productService.GetProductByIdAsync(id.Value);
             if (product == null) return NotFound();
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await GetFurnitureCategoriesAsync();
             return View(product);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize("Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductCode,ProductName,CategoryId,Price,CurrentStock,Description,CreatedDate")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductCode,ProductName,CategoryId,Price,CurrentStock,Description,CreatedDate,Material,Color,WidthCm,DepthCm,HeightCm,Unit,WarehouseLocation")] Product product)
         {
             if (id != product.ProductId) return NotFound();
 
             var existing = await _productService.GetProductByCodeAsync(product.ProductCode);
             if (existing != null && existing.ProductId != id)
-                ModelState.AddModelError("ProductCode", "Product Code already exists");
+                ModelState.AddModelError("ProductCode", "รหัสสินค้านี้มีในระบบแล้ว");
 
             if (ModelState.IsValid)
             {
@@ -96,7 +118,7 @@ namespace InventoryManagementSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await GetFurnitureCategoriesAsync();
             return View(product);
         }
 

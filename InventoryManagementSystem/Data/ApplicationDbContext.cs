@@ -123,9 +123,12 @@ namespace InventoryManagementSystem.Data
             );
 
             modelBuilder.Entity<Category>().HasData(
-                new Category { CategoryId = 1, CategoryName = "Electronics", Description = "Electronic devices" },
-                new Category { CategoryId = 2, CategoryName = "Clothing", Description = "Clothing items" },
-                new Category { CategoryId = 3, CategoryName = "Food", Description = "Food products" }
+                new Category { CategoryId = 1, CategoryName = "ห้องนั่งเล่น", Description = "โซฟา โต๊ะกลาง ชั้นวาง", ProductLine = "Furniture" },
+                new Category { CategoryId = 2, CategoryName = "ห้องนอน", Description = "เตียง ตู้เสื้อผ้า โต๊ะเครื่องแป้ง", ProductLine = "Furniture" },
+                new Category { CategoryId = 3, CategoryName = "ห้องทานอาหาร", Description = "โต๊ะอาหาร เก้าอี้", ProductLine = "Furniture" },
+                new Category { CategoryId = 4, CategoryName = "ห้องทำงาน", Description = "โต๊ะทำงาน เก้าอี้สำนักงาน", ProductLine = "Furniture" },
+                new Category { CategoryId = 5, CategoryName = "จัดเก็บ", Description = "ชั้นวาง ตู้ลิ้นชัก", ProductLine = "Furniture" },
+                new Category { CategoryId = 6, CategoryName = "กลางแจ้ง", Description = "เฟอร์นิเจอร์ลาน", ProductLine = "Furniture" }
             );
 
             modelBuilder.Entity<Department>().HasData(

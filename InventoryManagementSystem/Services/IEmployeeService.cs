@@ -15,5 +15,9 @@ namespace InventoryManagementSystem.Services
         Task SetActiveStatusAsync(int id, bool isActive, int actingUserId);
         Task<Employee> OnboardAsync(EmployeeOnboardViewModel model, int actingUserId);
         Task<IReadOnlyList<Employee>> GetManagersAsync(int? excludeEmployeeId = null);
+        Task<(bool Success, string? Error)> ApplySelfRegistrationAsync(int userId, EmployeeSelfRegisterViewModel model);
+        Task<IReadOnlyList<Employee>> GetPendingApprovalsAsync();
+        Task ApproveEmployeeAsync(int employeeId, int actingUserId);
+        Task RejectEmployeeAsync(int employeeId, int actingUserId, string? reason = null);
     }
 }

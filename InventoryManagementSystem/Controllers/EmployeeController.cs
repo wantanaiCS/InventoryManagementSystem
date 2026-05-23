@@ -29,6 +29,8 @@ namespace InventoryManagementSystem.Controllers
             ViewBag.Filter = filter;
             ViewBag.Departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
             ViewBag.IsAdmin = HttpContext.Session.IsAdmin();
+            if (HttpContext.Session.IsAdmin())
+                ViewBag.PendingCount = (await _employeeService.GetPendingApprovalsAsync()).Count;
             return View(result);
         }
 
@@ -181,11 +183,84 @@ namespace InventoryManagementSystem.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        /// <summary>พนักงานสมัครเอง (Auto) — รอ Admin อนุมัติ</summary>
+        [Authorize]
+        public async Task<IActionResult> ApplyProfile()
+        {
+            var userId = HttpContext.Session.GetCurrentUserId();
+            if (!userId.HasValue) return RedirectToAction("Login", "Auth");
+
+            var existing = await _employeeService.GetEmployeeByUserIdAsync(userId.Value);
+            if (existing != null)
+            {
+                if (existing.ApprovalStatus == "Pending")
+                    TempData["Info"] = "Your registration is pending admin approval.";
+                return RedirectToAction(nameof(Details), new { id = existing.EmployeeId });
+            }
+
+            ViewBag.Departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
+            ViewBag.Shifts = new[] { "Morning", "Afternoon", "Night" };
+            return View(new EmployeeSelfRegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ApplyProfile(EmployeeSelfRegisterViewModel model)
+        {
+            var userId = HttpContext.Session.GetCurrentUserId();
+            if (!userId.HasValue) return RedirectToAction("Login", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                var (success, error) = await _employeeService.ApplySelfRegistrationAsync(userId.Value, model);
+                if (success)
+                {
+                    TempData["Success"] = "Application submitted. An administrator will review your request.";
+                    return RedirectToAction("Index", "Dashboard");
+                }
+                ModelState.AddModelError(string.Empty, error ?? "Could not submit application.");
+            }
+
+            ViewBag.Departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
+            ViewBag.Shifts = new[] { "Morning", "Afternoon", "Night" };
+            return View(model);
+        }
+
+        [Authorize("Admin")]
+        public async Task<IActionResult> PendingApprovals()
+        {
+            var list = await _employeeService.GetPendingApprovalsAsync();
+            return View(list);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize("Admin")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
+            await _employeeService.ApproveEmployeeAsync(id, actingUserId);
+            TempData["Success"] = "Employee approved.";
+            return RedirectToAction(nameof(PendingApprovals));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize("Admin")]
+        public async Task<IActionResult> Reject(int id, string? reason)
+        {
+            var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
+            await _employeeService.RejectEmployeeAsync(id, actingUserId, reason);
+            TempData["Success"] = "Application rejected.";
+            return RedirectToAction(nameof(PendingApprovals));
+        }
+
         private async Task PopulateFormDataAsync(int? selectedUserId = null, int? editingEmployeeId = null)
         {
             ViewBag.Users = await _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.IsActive && (!_context.Employees.Any(e => e.UserId == u.UserId) || u.UserId == selectedUserId))
+                .Where(u => u.IsActive && (!_context.Employees.Any(e => e.UserId == u.UserId && e.ApprovalStatus == "Approved") || u.UserId == selectedUserId))
                 .ToListAsync();
 
             ViewBag.Departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();

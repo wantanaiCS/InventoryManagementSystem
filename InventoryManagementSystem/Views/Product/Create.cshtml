@@ -1,0 +1,100 @@
+@model InventoryManagementSystem.Models.Product
+@{
+    ViewData["Title"] = "เพิ่มสินค้าเฟอร์นิเจอร์";
+    var categories = ViewBag.Categories as IEnumerable<InventoryManagementSystem.Models.Category> ?? Enumerable.Empty<InventoryManagementSystem.Models.Category>();
+}
+
+<div class="container mt-4">
+    <h2><i class="fas fa-couch"></i> เพิ่มสินค้าเฟอร์นิเจอร์ใหม่</h2>
+    <p class="text-muted">Admin เท่านั้น — กรอกข้อมูลให้ครบเพื่อใช้กับระบบ Inventory</p>
+    <partial name="_Alerts" />
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="ProductCode" class="form-label">รหัสสินค้า (SKU) *</label>
+                <input asp-for="ProductCode" class="form-control" placeholder="เช่น FUR-SOF-001" />
+                <span asp-validation-for="ProductCode" class="text-danger"></span>
+            </div>
+            <div class="col-md-8 mb-3">
+                <label asp-for="ProductName" class="form-label">ชื่อสินค้า *</label>
+                <input asp-for="ProductName" class="form-control" placeholder="เช่น โซฟา 3 ที่นั่ง ผ้าลินิน" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">กลุ่มเฟอร์นิเจอร์ *</label>
+            <select asp-for="CategoryId" class="form-select">
+                <option value="">-- เลือกกลุ่ม --</option>
+                @foreach (var c in categories)
+                {
+                    <option value="@c.CategoryId">@c.CategoryName — @c.Description</option>
+                }
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="Material" class="form-label">วัสดุ</label>
+                <input asp-for="Material" class="form-control" placeholder="ไม้สัก, เหล็ก, ผ้า..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Color" class="form-label">สี</label>
+                <input asp-for="Color" class="form-control" placeholder="น้ำตาล, ขาว..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Unit" class="form-label">หน่วย</label>
+                <select asp-for="Unit" class="form-select">
+                    <option>ชิ้น</option>
+                    <option>ชุด</option>
+                    <option>ตัว</option>
+                    <option>แผ่น</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="WidthCm" class="form-label">กว้าง (ซม.)</label>
+                <input asp-for="WidthCm" type="number" step="0.1" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="DepthCm" class="form-label">ลึก (ซม.)</label>
+                <input asp-for="DepthCm" type="number" step="0.1" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="HeightCm" class="form-label">สูง (ซม.)</label>
+                <input asp-for="HeightCm" type="number" step="0.1" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="Price" class="form-label">ราคา (฿) *</label>
+                <input asp-for="Price" type="number" step="0.01" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="CurrentStock" class="form-label">สต็อกเริ่มต้น</label>
+                <input asp-for="CurrentStock" type="number" min="0" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="WarehouseLocation" class="form-label">ที่เก็บในคลัง</label>
+                <input asp-for="WarehouseLocation" class="form-control" placeholder="เช่น โซน A-12" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">รายละเอียด</label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> บันทึก</button>
+        <a asp-action="Index" class="btn btn-secondary">ยกเลิก</a>
+    </form>
+</div>
+
+@section Scripts { @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } }

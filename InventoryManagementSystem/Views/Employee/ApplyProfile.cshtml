@@ -1,0 +1,59 @@
+@model InventoryManagementSystem.ViewModels.EmployeeSelfRegisterViewModel
+@{
+    ViewData["Title"] = "Employee Self-Registration";
+    var departments = ViewBag.Departments as IEnumerable<InventoryManagementSystem.Models.Department> ?? Enumerable.Empty<InventoryManagementSystem.Models.Department>();
+    var shifts = ViewBag.Shifts as string[] ?? Array.Empty<string>();
+}
+
+<div class="container mt-4">
+    <h2><i class="fas fa-id-card"></i> สมัครโปรไฟล์พนักงาน (ระบบ Auto)</h2>
+    <div class="alert alert-info">
+        กรอกข้อมูลแล้วส่งให้ Admin อนุมัติ — เมื่ออนุมัติแล้วจึงใช้งานรับ–จ่ายสต็อกได้
+    </div>
+    <partial name="_Alerts" />
+    <form asp-action="ApplyProfile" method="post" class="col-md-8">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label">ชื่อ-นามสกุล *</label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Position" class="form-label">ตำแหน่ง *</label>
+            <input asp-for="Position" class="form-control" placeholder="เช่น พนักงานคลัง" />
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="DepartmentId" class="form-label">แผนก</label>
+                <select asp-for="DepartmentId" class="form-select">
+                    <option value="">-- เลือก --</option>
+                    @foreach (var d in departments)
+                    {
+                        <option value="@d.DepartmentId">@d.DepartmentName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="HireDate" class="form-label">วันที่เริ่มงาน</label>
+                <input asp-for="HireDate" type="date" class="form-control" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shift" class="form-label">กะ</label>
+            <select asp-for="Shift" class="form-select">@foreach (var s in shifts) { <option value="@s">@s</option> }</select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">เบอร์โทร</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">ที่อยู่</label>
+            <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">ส่งคำขออนุมัติ</button>
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">ยกเลิก</a>
+    </form>
+</div>
+
+@section Scripts { @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } }

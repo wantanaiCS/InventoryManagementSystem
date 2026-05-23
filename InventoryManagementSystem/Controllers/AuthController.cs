@@ -111,8 +111,8 @@ namespace InventoryManagementSystem.Controllers
             HttpContext.Session.SetString(SessionKeys.Username, user.Username);
             HttpContext.Session.SetString(SessionKeys.UserRole, "Employee");
 
-            TempData["Info"] = "Account created. Ask an admin to complete your employee profile, or use onboarding if you are an admin.";
-            return RedirectToAction("Index", "Dashboard");
+            TempData["Info"] = "Account created. Complete your employee profile (self-registration) or wait for admin to add you.";
+            return RedirectToAction("ApplyProfile", "Employee");
         }
 
         public IActionResult Logout()
