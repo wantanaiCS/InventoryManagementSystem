@@ -1,0 +1,23 @@
+@model InventoryManagementSystem.Models.Employee
+@{
+    ViewData["Title"] = "Deactivate Employee";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger">Deactivate Employee</h2>
+    <div class="alert alert-warning">
+        This performs a <strong>soft delete</strong>: the record is hidden and the user account is deactivated.
+        If this employee has inventory transactions, the record is kept for compliance.
+    </div>
+    <dl class="row">
+        <dt class="col-sm-3">Name</dt><dd class="col-sm-9">@Model.FullName</dd>
+        <dt class="col-sm-3">Position</dt><dd class="col-sm-9">@Model.Position</dd>
+        <dt class="col-sm-3">User</dt><dd class="col-sm-9">@Model.User?.Username</dd>
+    </dl>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="EmployeeId" />
+        <button type="submit" class="btn btn-danger">Confirm deactivate</button>
+        <a asp-action="Details" asp-route-id="@Model.EmployeeId" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

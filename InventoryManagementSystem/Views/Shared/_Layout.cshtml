@@ -1,10 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Inventory Management System</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -13,73 +12,58 @@
 @{
     var useFullWidthPage = ViewData["UseFullWidthPage"] is bool value && value;
     var bodyClass = ViewData["BodyClass"] as string ?? "";
+    var userId = Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.UserId);
+    var username = Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.Username);
+    var userRole = Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.UserRole);
+    var isAdmin = string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase);
 }
 <body class="@bodyClass">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">
                     <i class="fas fa-warehouse"></i> Inventory System
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Product" asp-action="Index">
-                                <i class="fas fa-box"></i> Products
-                            </a>
-                        </li>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (!string.IsNullOrEmpty(userId))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Index"><i class="fas fa-box"></i> Products</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Inventory" asp-action="Index"><i class="fas fa-exchange-alt"></i> Inventory</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Employee" asp-action="Index"><i class="fas fa-users"></i> Employees</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Home</a></li>
+                        }
                     </ul>
-
-                    @{
-                        var userId = Context.Session.GetString("UserId");
-                        var username = Context.Session.GetString("Username");
-                        var userRole = Context.Session.GetString("UserRole");
-                    }
-
                     <ul class="navbar-nav ms-auto">
                         @if (!string.IsNullOrEmpty(userId))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                     <i class="fas fa-user-circle"></i> @username
                                     <span class="badge bg-success">@userRole</span>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.Action("Profile", "Auth")">
-                                            <i class="fas fa-id-card"></i> My Profile
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Auth")">
-                                            <i class="fas fa-sign-out-alt"></i> Logout
-                                        </a>
-                                    </li>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile"><i class="fas fa-id-card"></i> My Profile</a></li>
+                                    @if (isAdmin)
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Employee" asp-action="Onboard"><i class="fas fa-magic"></i> Onboarding</a></li>
+                                    }
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item text-danger" asp-controller="Auth" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                 </ul>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Login">
-                                    <i class="fas fa-sign-in-alt"></i> Login
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Register">
-                                    <i class="fas fa-user-plus"></i> Register
-                                </a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a></li>
                         }
                     </ul>
                 </div>
@@ -88,26 +72,19 @@
     </header>
     @if (useFullWidthPage)
     {
-        <main role="main">
-            @RenderBody()
-        </main>
+        <main role="main">@RenderBody()</main>
     }
     else
     {
         <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+            <main role="main" class="pb-3">@RenderBody()</main>
         </div>
     }
-
     @if (!useFullWidthPage)
     {
         <footer class="border-top footer text-muted mt-5">
             <div class="container">
-                &copy; 2026 - Inventory Management System -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> |
-                <a href="https://github.com/wantanaiCS/InventoryManagementSystem" target="_blank">GitHub</a>
+                &copy; 2026 - Inventory Management System
             </div>
         </footer>
     }

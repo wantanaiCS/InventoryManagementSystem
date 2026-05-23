@@ -1,0 +1,120 @@
+@model InventoryManagementSystem.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Operations Dashboard";
+    ViewData["UseFullWidthPage"] = true;
+}
+
+<div class="container-fluid mt-4">
+    <partial name="_Alerts" />
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-chart-line"></i> Warehouse Operations Dashboard</h2>
+        @if (Model.IsAdmin)
+        {
+            <div class="btn-group">
+                <a asp-controller="Export" asp-action="Employees" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> Export Employees</a>
+                <a asp-controller="Export" asp-action="InventoryHistory" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> Export Inventory</a>
+            </div>
+        }
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="card bg-primary text-white"><div class="card-body"><h6>Products</h6><h3>@Model.TotalProducts</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-success text-white"><div class="card-body"><h6>Total Stock Units</h6><h3>@Model.TotalStock</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-info text-white"><div class="card-body"><h6>Active Employees</h6><h3>@Model.ActiveEmployees / @Model.TotalEmployees</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-warning text-dark"><div class="card-body"><h6>Transactions Today</h6><h3>@Model.TransactionsToday</h3><small>My activity: @Model.MyTransactionsToday</small></div></div></div>
+    </div>
+
+    @if (Model.MyPerformance != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-user-check"></i> My performance (this week)</div>
+            <div class="card-body row">
+                <div class="col-md-3"><strong>@Model.MyPerformance.TransactionsThisWeek</strong><br />Transactions</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TotalIn</strong><br />Units IN</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TotalOut</strong><br />Units OUT</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TopProductName</strong><br />Top product</div>
+            </div>
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header text-danger"><i class="fas fa-exclamation-triangle"></i> Low stock (≤ 5)</div>
+                <div class="card-body p-0">
+                    @if (Model.LowStockProducts.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var p in Model.LowStockProducts)
+                            {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>@p.ProductName <small class="text-muted">@p.Category?.CategoryName</small></span>
+                                    <span class="badge bg-danger">@p.CurrentStock</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="p-3 text-muted mb-0">All products above low-stock threshold.</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="fas fa-bell"></i> Notifications</div>
+                <div class="card-body p-0">
+                    @if (Model.Notifications.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var n in Model.Notifications)
+                            {
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>@n.Title</strong>
+                                        <form asp-action="MarkNotificationRead" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@n.NotificationId" />
+                                            <button type="submit" class="btn btn-link btn-sm p-0">Mark read</button>
+                                        </form>
+                                    </div>
+                                    <small>@n.Message</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="p-3 text-muted mb-0">No unread notifications.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between">
+            <span><i class="fas fa-history"></i> Recent inventory transactions</span>
+            <a asp-controller="Inventory" asp-action="Index" class="btn btn-sm btn-outline-primary">View all</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Date</th><th>Type</th><th>Product</th><th>Qty</th><th>By</th><th>Shift</th></tr></thead>
+                <tbody>
+                @foreach (var t in Model.RecentTransactions)
+                {
+                    <tr>
+                        <td>@t.CreatedDate.ToString("g")</td>
+                        <td><span class="badge @(t.TransactionType == "IN" ? "bg-success" : "bg-warning")">@t.TransactionType</span></td>
+                        <td>@t.Product?.ProductName</td>
+                        <td>@t.Quantity</td>
+                        <td>@t.CreatedByUser?.Username</td>
+                        <td>@t.Shift</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

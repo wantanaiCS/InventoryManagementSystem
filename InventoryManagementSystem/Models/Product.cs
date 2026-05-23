@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 namespace InventoryManagementSystem.Models
 {
     public class Product
@@ -11,8 +13,8 @@ namespace InventoryManagementSystem.Models
         public string Description { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        // Navigation properties
-        public Category Category { get; set; } = null!;
+        [ValidateNever]
+        public Category? Category { get; set; }
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
     }
 }

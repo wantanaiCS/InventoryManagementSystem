@@ -1,0 +1,112 @@
+@model InventoryManagementSystem.Models.Employee
+@{
+    ViewData["Title"] = "Create Employee";
+    var users = ViewBag.Users as IEnumerable<InventoryManagementSystem.Models.User> ?? Enumerable.Empty<InventoryManagementSystem.Models.User>();
+    var departments = ViewBag.Departments as IEnumerable<InventoryManagementSystem.Models.Department> ?? Enumerable.Empty<InventoryManagementSystem.Models.Department>();
+    var managers = ViewBag.Managers as IEnumerable<InventoryManagementSystem.Models.Employee> ?? Enumerable.Empty<InventoryManagementSystem.Models.Employee>();
+    var categories = ViewBag.Categories as IEnumerable<InventoryManagementSystem.Models.Category> ?? Enumerable.Empty<InventoryManagementSystem.Models.Category>();
+    var shifts = ViewBag.Shifts as string[] ?? Array.Empty<string>();
+}
+
+<div class="container mt-4">
+    <h2>Create Employee</h2>
+    <partial name="_Alerts" />
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="UserId" class="form-label">User Account *</label>
+                <select asp-for="UserId" class="form-select">
+                    <option value="">-- Select User --</option>
+                    @foreach (var user in users)
+                    {
+                        <option value="@user.UserId">@user.Username (@user.Email) - @user.Role?.RoleName</option>
+                    }
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="DepartmentId" class="form-label">Department</label>
+                <select asp-for="DepartmentId" class="form-select">
+                    <option value="">-- None --</option>
+                    @foreach (var d in departments)
+                    {
+                        <option value="@d.DepartmentId">@d.DepartmentName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="FullName" class="form-label">Full Name *</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Position" class="form-label">Position *</label>
+                <input asp-for="Position" class="form-control" />
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="HireDate" class="form-label">Hire Date *</label>
+                <input asp-for="HireDate" type="date" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Shift" class="form-label">Shift</label>
+                <select asp-for="Shift" class="form-select">
+                    @foreach (var s in shifts) { <option value="@s">@s</option> }
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="ReportsToEmployeeId" class="form-label">Reports To</label>
+                <select asp-for="ReportsToEmployeeId" class="form-select">
+                    <option value="">-- None --</option>
+                    @foreach (var m in managers)
+                    {
+                        <option value="@m.EmployeeId">@m.FullName (@m.Position)</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">Phone</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Address</label>
+            <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">Active (syncs user login)</label>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Assigned categories (empty = all)</label>
+            <div class="row">
+                @foreach (var c in categories)
+                {
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categoryIds" value="@c.CategoryId" id="cat_@c.CategoryId" />
+                            <label class="form-check-label" for="cat_@c.CategoryId">@c.CategoryName</label>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts { @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } }

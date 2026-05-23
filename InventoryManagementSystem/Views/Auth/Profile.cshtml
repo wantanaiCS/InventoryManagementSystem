@@ -1,47 +1,64 @@
 @{
     ViewData["Title"] = "My Profile";
+    var user = ViewBag.User as InventoryManagementSystem.Models.User;
+    var employee = ViewBag.Employee as InventoryManagementSystem.Models.Employee;
+    var transactions = ViewBag.Transactions as IEnumerable<InventoryManagementSystem.Models.InventoryTransaction> ?? Enumerable.Empty<InventoryManagementSystem.Models.InventoryTransaction>();
 }
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
+<div class="container mt-4">
+    <h2><i class="fas fa-id-card"></i> My Profile</h2>
+    <partial name="_Alerts" />
+
+    <div class="row g-4">
+        <div class="col-md-5">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-user-circle"></i> My Profile
-                    </h4>
+                <div class="card-header">Account</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Username:</strong> @user?.Username</li>
+                    <li class="list-group-item"><strong>Email:</strong> @user?.Email</li>
+                    <li class="list-group-item"><strong>Role:</strong> <span class="badge bg-primary">@user?.Role?.RoleName</span></li>
+                    <li class="list-group-item"><strong>Status:</strong> @(user?.IsActive == true ? "Active" : "Inactive")</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-7">
+            @if (employee != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">Employee record</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Name:</strong> @employee.FullName</li>
+                        <li class="list-group-item"><strong>Position:</strong> @employee.Position</li>
+                        <li class="list-group-item"><strong>Department:</strong> @(employee.Department?.DepartmentName ?? "—")</li>
+                        <li class="list-group-item"><strong>Shift:</strong> @employee.Shift</li>
+                    </ul>
+                    <div class="card-footer">
+                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.EmployeeId" class="btn btn-sm btn-outline-primary">View full profile</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <p class="text-muted"><strong>Username:</strong></p>
-                        </div>
-                        <div class="col-md-9">
-                            <p>@ViewBag.Username</p>
-                        </div>
-                    </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">No employee profile linked yet. Contact an administrator.</div>
+            }
 
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <p class="text-muted"><strong>Role:</strong></p>
-                        </div>
-                        <div class="col-md-9">
-                            <p>
-                                <span class="badge bg-info">@ViewBag.Role</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <div class="d-flex gap-2">
-                        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
-                            <i class="fas fa-home"></i> Back to Home
-                        </a>
-                        <a href="@Url.Action("Logout")" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </div>
+            <div class="card">
+                <div class="card-header">My recent stock activity</div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Date</th><th>Type</th><th>Product</th><th>Qty</th></tr></thead>
+                        <tbody>
+                        @foreach (var t in transactions)
+                        {
+                            <tr>
+                                <td>@t.CreatedDate.ToString("g")</td>
+                                <td>@t.TransactionType</td>
+                                <td>@t.Product?.ProductName</td>
+                                <td>@t.Quantity</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

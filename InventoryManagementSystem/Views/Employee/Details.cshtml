@@ -1,0 +1,103 @@
+@model InventoryManagementSystem.ViewModels.EmployeeDetailsViewModel
+@{
+    ViewData["Title"] = Model.Employee.FullName;
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+    var e = Model.Employee;
+}
+
+<div class="container-fluid mt-4">
+    <partial name="_Alerts" />
+    <div class="d-flex justify-content-between mb-3">
+        <h2><i class="fas fa-id-badge"></i> @e.FullName</h2>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Back</a>
+            @if (isAdmin)
+            {
+                <a asp-action="Edit" asp-route-id="@e.EmployeeId" class="btn btn-warning">Edit</a>
+                <form asp-action="ToggleActive" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@e.EmployeeId" />
+                    <input type="hidden" name="isActive" value="@(!e.IsActive)" />
+                    <button type="submit" class="btn @(e.IsActive ? "btn-outline-secondary" : "btn-outline-success")">
+                        @(e.IsActive ? "Deactivate" : "Activate")
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="card"><div class="card-body"><h6>Today</h6><h4>@Model.TransactionsToday</h4><small>transactions</small></div></div></div>
+        <div class="col-md-3"><div class="card"><div class="card-body"><h6>This week</h6><h4>@Model.TransactionsThisWeek</h4></div></div></div>
+        <div class="col-md-3"><div class="card"><div class="card-body"><h6>Total IN</h6><h4>@Model.TotalInQuantity</h4></div></div></div>
+        <div class="col-md-3"><div class="card"><div class="card-body"><h6>Total OUT</h6><h4>@Model.TotalOutQuantity</h4></div></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">Profile</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Position:</strong> @e.Position</li>
+                    <li class="list-group-item"><strong>Department:</strong> @(e.Department?.DepartmentName ?? "—")</li>
+                    <li class="list-group-item"><strong>Shift:</strong> @e.Shift</li>
+                    <li class="list-group-item"><strong>Manager:</strong> @(e.ReportsTo?.FullName ?? "—")</li>
+                    <li class="list-group-item"><strong>User:</strong> @e.User?.Username (@e.User?.Role?.RoleName)</li>
+                    <li class="list-group-item"><strong>Phone:</strong> @e.PhoneNumber</li>
+                    <li class="list-group-item"><strong>Hire date:</strong> @e.HireDate.ToString("dd/MM/yyyy")</li>
+                    <li class="list-group-item"><strong>Categories:</strong>
+                        @if (e.CategoryAssignments.Any())
+                        {
+                            @string.Join(", ", e.CategoryAssignments.Select(c => c.Category?.CategoryName))
+                        }
+                        else { <text>All categories</text> }
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header"><i class="fas fa-stream"></i> Activity timeline</div>
+                <div class="card-body">
+                    @if (Model.ActivityTimeline.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in Model.ActivityTimeline)
+                            {
+                                <li class="list-group-item">
+                                    <span class="badge @item.BadgeClass"><i class="fas @item.Icon"></i></span>
+                                    <strong>@item.Title</strong> — @item.Description
+                                    <br /><small class="text-muted">@item.Timestamp.ToString("g")</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No activity yet.</p>
+                    }
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Stock transactions</div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Date</th><th>Type</th><th>Product</th><th>Qty</th><th>Shift</th></tr></thead>
+                        <tbody>
+                        @foreach (var t in Model.RecentTransactions)
+                        {
+                            <tr>
+                                <td>@t.CreatedDate.ToString("g")</td>
+                                <td>@t.TransactionType</td>
+                                <td>@t.Product?.ProductName</td>
+                                <td>@t.Quantity</td>
+                                <td>@t.Shift</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,7 +6,7 @@ namespace InventoryManagementSystem.Models
         public string CategoryName { get; set; } = null!;
         public string Description { get; set; } = string.Empty;
 
-        // Navigation property
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<EmployeeCategoryAssignment> EmployeeAssignments { get; set; } = new List<EmployeeCategoryAssignment>();
     }
 }

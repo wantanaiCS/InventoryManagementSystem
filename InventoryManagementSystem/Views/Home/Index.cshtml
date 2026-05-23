@@ -1,8 +1,17 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Warehouse Operations Platform";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center py-5">
+    <h1 class="display-5"><i class="fas fa-warehouse"></i> Inventory Management System</h1>
+    <p class="lead">Track products, stock movements, and who did what on the warehouse floor.</p>
+    @if (Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.UserId) != null)
+    {
+        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg mt-3">Go to Dashboard</a>
+    }
+    else
+    {
+        <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg mt-3 me-2">Login</a>
+        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-secondary btn-lg mt-3">Register</a>
+    }
 </div>

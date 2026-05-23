@@ -1,0 +1,58 @@
+@model InventoryManagementSystem.Models.PagedResult<InventoryManagementSystem.Models.InventoryTransaction>
+@{
+    ViewData["Title"] = "Inventory History";
+    var type = ViewBag.Type as string;
+}
+
+<div class="container-fluid mt-4">
+    <partial name="_Alerts" />
+    <div class="d-flex justify-content-between mb-3">
+        <h2><i class="fas fa-exchange-alt"></i> Inventory Transactions</h2>
+        <div>
+            <a asp-action="Receive" class="btn btn-success"><i class="fas fa-arrow-down"></i> Receive</a>
+            <a asp-action="Dispense" class="btn btn-warning"><i class="fas fa-arrow-up"></i> Dispense</a>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-sm @(string.IsNullOrEmpty(type) ? "btn-primary" : "btn-outline-primary")">All</a>
+        <a asp-action="Index" asp-route-type="IN" class="btn btn-sm @(type == "IN" ? "btn-success" : "btn-outline-success")">IN</a>
+        <a asp-action="Index" asp-route-type="OUT" class="btn btn-sm @(type == "OUT" ? "btn-warning" : "btn-outline-warning")">OUT</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr><th>Date</th><th>Type</th><th>Product</th><th>Qty</th><th>By</th><th>Shift</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var t in Model.Items)
+            {
+                <tr>
+                    <td>@t.CreatedDate.ToString("g")</td>
+                    <td><span class="badge @(t.TransactionType == "IN" ? "bg-success" : "bg-warning")">@t.TransactionType</span></td>
+                    <td>@t.Product?.ProductName</td>
+                    <td>@t.Quantity</td>
+                    <td>@t.CreatedByUser?.Username</td>
+                    <td>@t.Shift</td>
+                    <td>@t.Notes</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <nav>
+        <ul class="pagination">
+            @if (Model.HasPrevious)
+            {
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-type="@type">Previous</a></li>
+            }
+            <li class="page-item disabled"><span class="page-link">Page @Model.Page / @Model.TotalPages</span></li>
+            @if (Model.HasNext)
+            {
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-type="@type">Next</a></li>
+            }
+        </ul>
+    </nav>
+</div>
