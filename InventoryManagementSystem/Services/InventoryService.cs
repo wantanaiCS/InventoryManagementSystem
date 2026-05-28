@@ -1,16 +1,19 @@
 using InventoryManagementSystem.Data;
 using InventoryManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace InventoryManagementSystem.Services
 {
     public class InventoryService : IInventoryService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IStringLocalizer<SharedResource> _l;
 
-        public InventoryService(ApplicationDbContext context)
+        public InventoryService(ApplicationDbContext context, IStringLocalizer<SharedResource> localizer)
         {
             _context = context;
+            _l = localizer;
         }
 
         public async Task<(bool Success, string? Error)> RecordTransactionAsync(
@@ -18,30 +21,30 @@ namespace InventoryManagementSystem.Services
         {
             transactionType = transactionType.ToUpperInvariant();
             if (transactionType is not ("IN" or "OUT"))
-                return (false, "Transaction type must be IN or OUT.");
+                return (false, _l["Inventory.Error.TypeInvalid"]);
 
             if (quantity <= 0)
-                return (false, "Quantity must be greater than zero.");
+                return (false, _l["Inventory.Error.QuantityInvalid"]);
 
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (product == null)
-                return (false, "Product not found.");
+                return (false, _l["Inventory.Error.ProductNotFound"]);
 
             if (transactionType == "OUT" && product.CurrentStock < quantity)
-                return (false, $"Insufficient stock. Available: {product.CurrentStock}");
+                return (false, string.Format(_l["Inventory.Error.InsufficientStock"], product.CurrentStock));
 
             var employee = await _context.Employees
                 .Include(e => e.CategoryAssignments)
                 .FirstOrDefaultAsync(e => e.UserId == userId && !e.IsDeleted);
 
             if (employee != null && employee.ApprovalStatus != "Approved")
-                return (false, "Your employee profile is pending approval. Please wait for admin.");
+                return (false, _l["Inventory.Error.EmployeePending"]);
 
             if (employee != null && employee.CategoryAssignments.Count > 0)
             {
                 var allowed = employee.CategoryAssignments.Any(a => a.CategoryId == product.CategoryId);
                 if (!allowed)
-                    return (false, "You are not assigned to manage this product category.");
+                    return (false, _l["Inventory.Error.CategoryNotAssigned"]);
             }
 
             if (transactionType == "IN")

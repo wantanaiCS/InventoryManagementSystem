@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InventoryManagementSystem.styles.css" asp-append-version="true" />
 </head>
+@using InventoryManagementSystem
+@using System.Globalization
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SharedResource> L
 @{
     var useFullWidthPage = ViewData["UseFullWidthPage"] is bool value && value;
     var bodyClass = ViewData["BodyClass"] as string ?? "";
@@ -16,13 +19,14 @@
     var username = Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.Username);
     var userRole = Context.Session.GetString(InventoryManagementSystem.Helpers.SessionKeys.UserRole);
     var isAdmin = string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase);
+    var culture = CultureInfo.CurrentUICulture.Name;
 }
 <body class="@bodyClass">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">
-                    <i class="fas fa-warehouse"></i> Inventory System
+                    <i class="fas fa-warehouse"></i> @L["App.Title"]
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
@@ -31,17 +35,40 @@
                     <ul class="navbar-nav me-auto">
                         @if (!string.IsNullOrEmpty(userId))
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Index"><i class="fas fa-couch"></i> Furniture</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Inventory" asp-action="Index"><i class="fas fa-exchange-alt"></i> Inventory</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Employee" asp-action="Index"><i class="fas fa-users"></i> Employees</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line"></i> @L["Nav.Dashboard"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Product" asp-action="Index"><i class="fas fa-couch"></i> @L["Nav.Products"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Inventory" asp-action="Index"><i class="fas fa-exchange-alt"></i> @L["Nav.Inventory"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Employee" asp-action="Index"><i class="fas fa-users"></i> @L["Nav.Employees"]</a></li>
                         }
                         else
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Home</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> @L["Nav.Home"]</a></li>
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-language"></i> @L["Lang.Label"]
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form asp-controller="Localization" asp-action="SetLanguage" method="post" class="px-3 py-1">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="culture" value="th-TH" />
+                                        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                                        <button type="submit" class="btn btn-link dropdown-item @(culture == "th-TH" ? "active" : "")">@L["Lang.Thai"]</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form asp-controller="Localization" asp-action="SetLanguage" method="post" class="px-3 py-1">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="culture" value="en-US" />
+                                        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                                        <button type="submit" class="btn btn-link dropdown-item @(culture == "en-US" ? "active" : "")">@L["Lang.English"]</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                         @if (!string.IsNullOrEmpty(userId))
                         {
                             <li class="nav-item dropdown">
@@ -50,20 +77,20 @@
                                     <span class="badge bg-success">@userRole</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile"><i class="fas fa-id-card"></i> My Profile</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="Profile"><i class="fas fa-id-card"></i> @L["Auth.MyProfile"]</a></li>
                                     @if (isAdmin)
                                     {
-                                        <li><a class="dropdown-item" asp-controller="Employee" asp-action="Onboard"><i class="fas fa-magic"></i> Onboarding</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Employee" asp-action="Onboard"><i class="fas fa-magic"></i> @L["Employee.Onboarding"]</a></li>
                                     }
                                     <li><hr class="dropdown-divider" /></li>
-                                    <li><a class="dropdown-item text-danger" asp-controller="Auth" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    <li><a class="dropdown-item text-danger" asp-controller="Auth" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> @L["Auth.Logout"]</a></li>
                                 </ul>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">@L["Auth.Login"]</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">@L["Auth.Register"]</a></li>
                         }
                     </ul>
                 </div>

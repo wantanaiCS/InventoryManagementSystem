@@ -5,6 +5,7 @@ using InventoryManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementSystem.Data;
+using Microsoft.Extensions.Localization;
 
 namespace InventoryManagementSystem.Controllers
 {
@@ -14,12 +15,14 @@ namespace InventoryManagementSystem.Controllers
         private readonly IInventoryService _inventoryService;
         private readonly ApplicationDbContext _context;
         private readonly IAuditService _auditService;
+        private readonly IStringLocalizer<SharedResource> _l;
 
-        public InventoryController(IInventoryService inventoryService, ApplicationDbContext context, IAuditService auditService)
+        public InventoryController(IInventoryService inventoryService, ApplicationDbContext context, IAuditService auditService, IStringLocalizer<SharedResource> localizer)
         {
             _inventoryService = inventoryService;
             _context = context;
             _auditService = auditService;
+            _l = localizer;
         }
 
         public async Task<IActionResult> Index(int page = 1, string? type = null)
@@ -49,11 +52,11 @@ namespace InventoryManagementSystem.Controllers
             if (success)
             {
                 await _auditService.LogAsync(userId.Value, "STOCK_IN", "InventoryTransactions", model.ProductId);
-                TempData["Success"] = "Stock received successfully.";
+                TempData["Success"] = _l["Inventory.Success.Receive"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
-            ModelState.AddModelError(string.Empty, error ?? "Transaction failed.");
+            ModelState.AddModelError(string.Empty, error ?? _l["Inventory.Error.TransactionFailed"]);
             ViewBag.Products = await _context.Products.Include(p => p.Category).OrderBy(p => p.ProductName).ToListAsync();
             ViewBag.Shifts = new[] { "Morning", "Afternoon", "Night" };
             return View(model);
@@ -79,11 +82,11 @@ namespace InventoryManagementSystem.Controllers
             if (success)
             {
                 await _auditService.LogAsync(userId.Value, "STOCK_OUT", "InventoryTransactions", model.ProductId);
-                TempData["Success"] = "Stock dispensed successfully.";
+                TempData["Success"] = _l["Inventory.Success.Dispense"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
-            ModelState.AddModelError(string.Empty, error ?? "Transaction failed.");
+            ModelState.AddModelError(string.Empty, error ?? _l["Inventory.Error.TransactionFailed"]);
             ViewBag.Products = await _context.Products.Include(p => p.Category).OrderBy(p => p.ProductName).ToListAsync();
             ViewBag.Shifts = new[] { "Morning", "Afternoon", "Night" };
             return View(model);

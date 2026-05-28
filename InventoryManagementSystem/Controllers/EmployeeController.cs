@@ -4,6 +4,7 @@ using InventoryManagementSystem.Helpers;
 using InventoryManagementSystem.Models;
 using InventoryManagementSystem.Services;
 using InventoryManagementSystem.ViewModels;
+using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +16,14 @@ namespace InventoryManagementSystem.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<EmployeeController> _logger;
+        private readonly IStringLocalizer<SharedResource> _l;
 
-        public EmployeeController(IEmployeeService employeeService, ApplicationDbContext context, ILogger<EmployeeController> logger)
+        public EmployeeController(IEmployeeService employeeService, ApplicationDbContext context, ILogger<EmployeeController> logger, IStringLocalizer<SharedResource> localizer)
         {
             _employeeService = employeeService;
             _context = context;
             _logger = logger;
+            _l = localizer;
         }
 
         public async Task<IActionResult> Index(EmployeeFilterViewModel filter)
@@ -58,10 +61,10 @@ namespace InventoryManagementSystem.Controllers
             List<int> categoryIds)
         {
             if (employee.UserId <= 0)
-                ModelState.AddModelError(nameof(employee.UserId), "Please select a user account.");
+                ModelState.AddModelError(nameof(employee.UserId), _l["Employee.Error.UserRequired"]);
 
             if (await _employeeService.GetEmployeeByUserIdAsync(employee.UserId) != null)
-                ModelState.AddModelError(nameof(employee.UserId), "This user already has an employee record");
+                ModelState.AddModelError(nameof(employee.UserId), _l["Employee.Error.UserAlreadyHasEmployee"]);
 
             if (ModelState.IsValid)
             {
@@ -69,13 +72,13 @@ namespace InventoryManagementSystem.Controllers
                 {
                     var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
                     await _employeeService.AddEmployeeAsync(employee, categoryIds ?? new List<int>(), actingUserId);
-                    TempData["Success"] = "Employee created successfully.";
+                    TempData["Success"] = _l["Employee.Success.Created"].Value;
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Create employee failed");
-                    ModelState.AddModelError(string.Empty, "An error occurred while creating the employee.");
+                    ModelState.AddModelError(string.Empty, _l["Employee.Error.CreateFailed"]);
                 }
             }
 
@@ -101,7 +104,7 @@ namespace InventoryManagementSystem.Controllers
                 {
                     var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
                     var employee = await _employeeService.OnboardAsync(model, actingUserId);
-                    TempData["Success"] = $"Onboarding complete for {employee.FullName}.";
+                    TempData["Success"] = string.Format(_l["Employee.Success.OnboardComplete"], employee.FullName);
                     return RedirectToAction(nameof(Details), new { id = employee.EmployeeId });
                 }
                 catch (Exception ex)
@@ -140,7 +143,7 @@ namespace InventoryManagementSystem.Controllers
             {
                 var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
                 await _employeeService.UpdateEmployeeAsync(employee, categoryIds ?? new List<int>(), actingUserId);
-                TempData["Success"] = "Employee updated.";
+                TempData["Success"] = _l["Employee.Success.Updated"].Value;
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -168,7 +171,7 @@ namespace InventoryManagementSystem.Controllers
             if (!success)
                 TempData["Error"] = error;
             else
-                TempData["Success"] = "Employee deactivated (soft delete).";
+                TempData["Success"] = _l["Employee.Success.Deactivated"].Value;
             return RedirectToAction(nameof(Index));
         }
 
@@ -179,7 +182,7 @@ namespace InventoryManagementSystem.Controllers
         {
             var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
             await _employeeService.SetActiveStatusAsync(id, isActive, actingUserId);
-            TempData["Success"] = isActive ? "Employee activated." : "Employee deactivated.";
+            TempData["Success"] = isActive ? _l["Employee.Success.Activated"].Value : _l["Employee.Success.DeactivatedSimple"].Value;
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -194,7 +197,7 @@ namespace InventoryManagementSystem.Controllers
             if (existing != null)
             {
                 if (existing.ApprovalStatus == "Pending")
-                    TempData["Info"] = "Your registration is pending admin approval.";
+                    TempData["Info"] = _l["Employee.Info.PendingApproval"].Value;
                 return RedirectToAction(nameof(Details), new { id = existing.EmployeeId });
             }
 
@@ -216,10 +219,10 @@ namespace InventoryManagementSystem.Controllers
                 var (success, error) = await _employeeService.ApplySelfRegistrationAsync(userId.Value, model);
                 if (success)
                 {
-                    TempData["Success"] = "Application submitted. An administrator will review your request.";
+                    TempData["Success"] = _l["Employee.Success.ApplicationSubmitted"].Value;
                     return RedirectToAction("Index", "Dashboard");
                 }
-                ModelState.AddModelError(string.Empty, error ?? "Could not submit application.");
+                ModelState.AddModelError(string.Empty, error ?? _l["Employee.Error.SelfRegistrationFailed"]);
             }
 
             ViewBag.Departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
@@ -241,7 +244,7 @@ namespace InventoryManagementSystem.Controllers
         {
             var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
             await _employeeService.ApproveEmployeeAsync(id, actingUserId);
-            TempData["Success"] = "Employee approved.";
+            TempData["Success"] = _l["Employee.Success.Approved"].Value;
             return RedirectToAction(nameof(PendingApprovals));
         }
 
@@ -252,7 +255,7 @@ namespace InventoryManagementSystem.Controllers
         {
             var actingUserId = HttpContext.Session.GetCurrentUserId() ?? 0;
             await _employeeService.RejectEmployeeAsync(id, actingUserId, reason);
-            TempData["Success"] = "Application rejected.";
+            TempData["Success"] = _l["Employee.Success.Rejected"].Value;
             return RedirectToAction(nameof(PendingApprovals));
         }
 

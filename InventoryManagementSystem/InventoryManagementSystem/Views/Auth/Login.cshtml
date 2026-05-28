@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = L["Auth.Login"];
     ViewData["UseFullWidthPage"] = true;
     ViewData["BodyClass"] = "auth-body";
 
@@ -9,32 +9,32 @@
 }
 
 <section class="auth-shell" aria-labelledby="auth-title">
-    <aside class="auth-visual" aria-label="Inventory system overview">
+    <aside class="auth-visual" aria-label="@L["Auth.SystemOverview"]">
         <div class="auth-brand">
             <span class="auth-brand-mark">
                 <i class="fas fa-warehouse" aria-hidden="true"></i>
             </span>
-            <span>Inventory System</span>
+            <span>@L["App.Title"]</span>
         </div>
 
         <div class="auth-visual-copy">
-            <p class="auth-eyebrow">Secure access</p>
-            <h1>Control stock, orders, and team access from one workspace.</h1>
-            <p>Sign in to keep inventory decisions accurate, visible, and ready for daily operations.</p>
+            <p class="auth-eyebrow">@L["Auth.SecureAccess"]</p>
+            <h1>@L["Auth.ControlStock"]</h1>
+            <p>@L["Auth.SignInDescription"]</p>
         </div>
 
         <div class="auth-metrics" aria-label="System highlights">
             <div>
                 <strong>Real-time</strong>
-                <span>Product tracking</span>
+                <span>@L["Auth.Highlights1"]</span>
             </div>
             <div>
                 <strong>Role based</strong>
-                <span>Team access</span>
+                <span>@L["Auth.Highlights2"]</span>
             </div>
             <div>
                 <strong>Audit ready</strong>
-                <span>Transaction history</span>
+                <span>@L["Auth.Highlights3"]</span>
             </div>
         </div>
     </aside>
@@ -46,8 +46,8 @@
                     <i class="fas fa-lock" aria-hidden="true"></i>
                 </span>
                 <div>
-                    <p class="auth-kicker">Welcome back</p>
-                    <h2 id="auth-title">Login to your account</h2>
+                    <p class="auth-kicker">@L["Auth.WelcomeBack"]</p>
+                    <h2 id="auth-title">@L["Auth.LoginTitle"]</h2>
                 </div>
             </div>
 
@@ -55,14 +55,14 @@
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger auth-validation" role="alert"></div>
 
                 <div class="auth-field">
-                    <label for="username">Username <span>*</span></label>
+                    <label for="username">@L["Auth.Username"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-user" aria-hidden="true"></i>
                         <input id="username"
                                type="text"
                                name="username"
                                class="form-control"
-                               placeholder="Enter your username"
+                               placeholder="@L["Auth.EnterUsername"]"
                                value="@postedUsername"
                                autocomplete="username"
                                required />
@@ -70,20 +70,20 @@
                 </div>
 
                 <div class="auth-field">
-                    <label for="password">Password <span>*</span></label>
+                    <label for="password">@L["Auth.Password"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-key" aria-hidden="true"></i>
                         <input id="password"
                                type="password"
                                name="password"
                                class="form-control"
-                               placeholder="Enter your password"
+                               placeholder="@L["Auth.EnterPassword"]"
                                autocomplete="current-password"
                                required />
                         <button class="auth-password-toggle"
                                 type="button"
                                 data-password-toggle
-                                aria-label="Show password"
+                                aria-label="@L["Auth.Password"]"
                                 aria-controls="password">
                             <i class="fas fa-eye" aria-hidden="true"></i>
                         </button>
@@ -91,14 +91,14 @@
                 </div>
 
                 <button type="submit" class="auth-submit">
-                    <span>Login</span>
+                    <span>@L["Auth.SignIn"]</span>
                     <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
 
             <p class="auth-switch">
-                Don't have an account?
-                <a href="@Url.Action("Register")">Create account</a>
+                @L["Auth.NoAccount"]
+                <a href="@Url.Action("Register")">@L["Auth.CreateOne"]</a>
             </p>
         </div>
     </div>

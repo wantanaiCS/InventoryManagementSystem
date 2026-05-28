@@ -3,6 +3,7 @@ using InventoryManagementSystem.Attributes;
 using InventoryManagementSystem.Data;
 using InventoryManagementSystem.Helpers;
 using InventoryManagementSystem.Services;
+using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,17 +15,20 @@ namespace InventoryManagementSystem.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmployeeService _employeeService;
         private readonly IInventoryService _inventoryService;
+        private readonly IStringLocalizer<SharedResource> _l;
 
         public AuthController(
             IAuthService authService,
             ApplicationDbContext context,
             IEmployeeService employeeService,
-            IInventoryService inventoryService)
+            IInventoryService inventoryService,
+            IStringLocalizer<SharedResource> localizer)
         {
             _authService = authService;
             _context = context;
             _employeeService = employeeService;
             _inventoryService = inventoryService;
+            _l = localizer;
         }
 
         public IActionResult Login()
@@ -40,14 +44,14 @@ namespace InventoryManagementSystem.Controllers
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError("", "Username and password are required");
+                ModelState.AddModelError("", _l["Auth.Error.Required"]);
                 return View();
             }
 
             var user = await _authService.AuthenticateAsync(username, password);
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid username or password");
+                ModelState.AddModelError("", _l["Auth.Error.InvalidCredentials"]);
                 return View();
             }
 
@@ -72,38 +76,38 @@ namespace InventoryManagementSystem.Controllers
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError("", "All fields are required");
+                ModelState.AddModelError("", _l["Auth.Error.AllFieldsRequired"]);
                 return View();
             }
 
             if (password != confirmPassword)
             {
-                ModelState.AddModelError("", "Passwords do not match");
+                ModelState.AddModelError("", _l["Auth.Error.PasswordMismatch"]);
                 return View();
             }
 
             if (password.Length < 6)
             {
-                ModelState.AddModelError("", "Password must be at least 6 characters");
+                ModelState.AddModelError("", _l["Auth.Error.PasswordMinLength"]);
                 return View();
             }
 
             if (await _authService.UsernameExistsAsync(username))
             {
-                ModelState.AddModelError("", "Username already exists");
+                ModelState.AddModelError("", _l["Auth.Error.UsernameExists"]);
                 return View();
             }
 
             if (await _authService.EmailExistsAsync(email))
             {
-                ModelState.AddModelError("", "Email already exists");
+                ModelState.AddModelError("", _l["Auth.Error.EmailExists"]);
                 return View();
             }
 
             var user = await _authService.RegisterAsync(username, email, password, roleId: 2);
             if (user == null)
             {
-                ModelState.AddModelError("", "Registration failed. Please try again.");
+                ModelState.AddModelError("", _l["Auth.Error.RegistrationFailed"]);
                 return View();
             }
 
@@ -111,7 +115,7 @@ namespace InventoryManagementSystem.Controllers
             HttpContext.Session.SetString(SessionKeys.Username, user.Username);
             HttpContext.Session.SetString(SessionKeys.UserRole, "Employee");
 
-            TempData["Info"] = "Account created. Complete your employee profile (self-registration) or wait for admin to add you.";
+            TempData["Info"] = _l["Auth.Info.AccountCreated"].Value;
             return RedirectToAction("ApplyProfile", "Employee");
         }
 

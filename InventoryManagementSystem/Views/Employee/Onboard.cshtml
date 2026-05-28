@@ -1,6 +1,6 @@
 @model InventoryManagementSystem.ViewModels.EmployeeOnboardViewModel
 @{
-    ViewData["Title"] = "Employee Onboarding Wizard";
+    ViewData["Title"] = L["Employee.OnboardWizardTitle"];
     var departments = ViewBag.Departments as IEnumerable<InventoryManagementSystem.Models.Department> ?? Enumerable.Empty<InventoryManagementSystem.Models.Department>();
     var managers = ViewBag.Managers as IEnumerable<InventoryManagementSystem.Models.Employee> ?? Enumerable.Empty<InventoryManagementSystem.Models.Employee>();
     var categories = ViewBag.Categories as IEnumerable<InventoryManagementSystem.Models.Category> ?? Enumerable.Empty<InventoryManagementSystem.Models.Category>();
@@ -9,31 +9,31 @@
 }
 
 <div class="container mt-4">
-    <h2><i class="fas fa-magic"></i> Onboarding Wizard</h2>
-    <p class="text-muted">Create user account + employee profile + category access in one step.</p>
+    <h2><i class="fas fa-magic"></i> @L["Employee.OnboardWizardTitle"]</h2>
+    <p class="text-muted">@L["Employee.OnboardWizardDesc"]</p>
     <partial name="_Alerts" />
     <form asp-action="Onboard" method="post">
         @Html.AntiForgeryToken()
         <div asp-validation-summary="All" class="alert alert-danger"></div>
 
         <div class="card mb-3">
-            <div class="card-header">Step 1 — User account</div>
+            <div class="card-header">@L["Employee.OnboardStep1"]</div>
             <div class="card-body row">
                 <div class="col-md-4 mb-3">
-                    <label asp-for="Username" class="form-label">Username *</label>
+                    <label asp-for="Username" class="form-label">@L["Auth.Username"] *</label>
                     <input asp-for="Username" class="form-control" />
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="Email" class="form-label">Email *</label>
+                    <label asp-for="Email" class="form-label">@L["Auth.Email"] *</label>
                     <input asp-for="Email" class="form-control" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="Password" class="form-label">Password *</label>
+                    <label asp-for="Password" class="form-label">@L["Auth.Password"] *</label>
                     <input asp-for="Password" type="password" class="form-control" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="RoleId" class="form-label">Role</label>
+                    <label asp-for="RoleId" class="form-label">@L["Auth.Role"]</label>
                     <select asp-for="RoleId" class="form-select">
                         @foreach (var r in roles)
                         {
@@ -45,36 +45,36 @@
         </div>
 
         <div class="card mb-3">
-            <div class="card-header">Step 2 — Employee profile</div>
+            <div class="card-header">@L["Employee.OnboardStep2"]</div>
             <div class="card-body row">
-                <div class="col-md-6 mb-3"><label asp-for="FullName" class="form-label">Full Name *</label><input asp-for="FullName" class="form-control" /></div>
-                <div class="col-md-6 mb-3"><label asp-for="Position" class="form-label">Position *</label><input asp-for="Position" class="form-control" /></div>
+                <div class="col-md-6 mb-3"><label asp-for="FullName" class="form-label">@L["Employee.FullName"] *</label><input asp-for="FullName" class="form-control" /></div>
+                <div class="col-md-6 mb-3"><label asp-for="Position" class="form-label">@L["Employee.Position"] *</label><input asp-for="Position" class="form-control" /></div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="DepartmentId" class="form-label">Department</label>
+                    <label asp-for="DepartmentId" class="form-label">@L["Employee.Department"]</label>
                     <select asp-for="DepartmentId" class="form-select">
-                        <option value="">-- None --</option>
+                        <option value="">@L["Common.NoneOption"]</option>
                         @foreach (var d in departments) { <option value="@d.DepartmentId">@d.DepartmentName</option> }
                     </select>
                 </div>
-                <div class="col-md-4 mb-3"><label asp-for="HireDate" class="form-label">Hire Date</label><input asp-for="HireDate" type="date" class="form-control" /></div>
+                <div class="col-md-4 mb-3"><label asp-for="HireDate" class="form-label">@L["Employee.HireDate"]</label><input asp-for="HireDate" type="date" class="form-control" /></div>
                 <div class="col-md-4 mb-3">
-                    <label asp-for="Shift" class="form-label">Shift</label>
+                    <label asp-for="Shift" class="form-label">@L["Employee.Shift"]</label>
                     <select asp-for="Shift" class="form-select">@foreach (var s in shifts) { <option value="@s">@s</option> }</select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="ReportsToEmployeeId" class="form-label">Manager</label>
+                    <label asp-for="ReportsToEmployeeId" class="form-label">@L["Employee.Manager"]</label>
                     <select asp-for="ReportsToEmployeeId" class="form-select">
-                        <option value="">-- None --</option>
+                        <option value="">@L["Common.NoneOption"]</option>
                         @foreach (var m in managers) { <option value="@m.EmployeeId">@m.FullName</option> }
                     </select>
                 </div>
-                <div class="col-md-6 mb-3"><label asp-for="PhoneNumber" class="form-label">Phone</label><input asp-for="PhoneNumber" class="form-control" /></div>
-                <div class="col-12 mb-3"><label asp-for="Address" class="form-label">Address</label><textarea asp-for="Address" class="form-control" rows="2"></textarea></div>
+                <div class="col-md-6 mb-3"><label asp-for="PhoneNumber" class="form-label">@L["Employee.Phone"]</label><input asp-for="PhoneNumber" class="form-control" /></div>
+                <div class="col-12 mb-3"><label asp-for="Address" class="form-label">@L["Employee.Address"]</label><textarea asp-for="Address" class="form-control" rows="2"></textarea></div>
             </div>
         </div>
 
         <div class="card mb-3">
-            <div class="card-header">Step 3 — Warehouse categories</div>
+            <div class="card-header">@L["Employee.OnboardStep3"]</div>
             <div class="card-body row">
                 @foreach (var c in categories)
                 {
@@ -88,8 +88,8 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-check"></i> Complete onboarding</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-check"></i> @L["Employee.CompleteOnboarding"]</button>
+        <a asp-action="Index" class="btn btn-secondary">@L["Common.Cancel"]</a>
     </form>
 </div>
 

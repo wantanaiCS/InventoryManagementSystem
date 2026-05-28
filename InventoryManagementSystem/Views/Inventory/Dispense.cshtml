@@ -1,33 +1,35 @@
 @model InventoryManagementSystem.ViewModels.InventoryTransactionFormViewModel
+@using InventoryManagementSystem
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SharedResource> L
 @{
-    ViewData["Title"] = "Dispense Stock";
+    ViewData["Title"] = L["Inventory.DispenseTitle"];
     var products = ViewBag.Products as IEnumerable<InventoryManagementSystem.Models.Product> ?? Enumerable.Empty<InventoryManagementSystem.Models.Product>();
     var shifts = ViewBag.Shifts as string[] ?? Array.Empty<string>();
 }
 
 <div class="container mt-4">
-    <h2><i class="fas fa-arrow-up text-warning"></i> Dispense Stock (OUT)</h2>
+    <h2><i class="fas fa-arrow-up text-warning"></i> @L["Inventory.DispenseTitle"]</h2>
     <partial name="_Alerts" />
-    <form asp-action="Dispense" method="post" class="col-md-6">
+    <form asp-controller="Inventory" asp-action="Dispense" method="post" class="col-md-6">
         @Html.AntiForgeryToken()
         <div asp-validation-summary="All" class="alert alert-danger"></div>
         <div class="mb-3">
-            <label asp-for="ProductId" class="form-label">Product *</label>
+            <label asp-for="ProductId" class="form-label">@L["Inventory.Form.Product"] *</label>
             <select asp-for="ProductId" class="form-select">
-                <option value="">-- Select --</option>
+                <option value="">@L["Inventory.Form.Select"]</option>
                 @foreach (var p in products)
                 {
-                    <option value="@p.ProductId">@p.ProductName — stock: @p.CurrentStock</option>
+                    <option value="@p.ProductId">@p.ProductName — @L["Inventory.Form.Stock"]: @p.CurrentStock</option>
                 }
             </select>
         </div>
-        <div class="mb-3"><label asp-for="Quantity" class="form-label">Quantity *</label><input asp-for="Quantity" class="form-control" type="number" min="1" /></div>
+        <div class="mb-3"><label asp-for="Quantity" class="form-label">@L["Inventory.Form.Quantity"] *</label><input asp-for="Quantity" class="form-control" type="number" min="1" /></div>
         <div class="mb-3">
-            <label asp-for="Shift" class="form-label">Shift</label>
+            <label asp-for="Shift" class="form-label">@L["Inventory.Form.Shift"]</label>
             <select asp-for="Shift" class="form-select">@foreach (var s in shifts) { <option value="@s">@s</option> }</select>
         </div>
-        <div class="mb-3"><label asp-for="Notes" class="form-label">Notes</label><textarea asp-for="Notes" class="form-control" rows="2"></textarea></div>
-        <button type="submit" class="btn btn-warning">Record OUT</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <div class="mb-3"><label asp-for="Notes" class="form-label">@L["Inventory.Form.Notes"]</label><textarea asp-for="Notes" class="form-control" rows="2"></textarea></div>
+        <button type="submit" class="btn btn-warning">@L["Inventory.Form.RecordOut"]</button>
+        <a asp-action="Index" class="btn btn-secondary">@L["Common.Cancel"]</a>
     </form>
 </div>

@@ -1,23 +1,23 @@
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = L["Auth.MyProfileTitle"];
     var user = ViewBag.User as InventoryManagementSystem.Models.User;
     var employee = ViewBag.Employee as InventoryManagementSystem.Models.Employee;
     var transactions = ViewBag.Transactions as IEnumerable<InventoryManagementSystem.Models.InventoryTransaction> ?? Enumerable.Empty<InventoryManagementSystem.Models.InventoryTransaction>();
 }
 
 <div class="container mt-4">
-    <h2><i class="fas fa-id-card"></i> My Profile</h2>
+    <h2><i class="fas fa-id-card"></i> @L["Auth.MyProfileTitle"]</h2>
     <partial name="_Alerts" />
 
     <div class="row g-4">
         <div class="col-md-5">
             <div class="card">
-                <div class="card-header">Account</div>
+                <div class="card-header">@L["Auth.Account"]</div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Username:</strong> @user?.Username</li>
-                    <li class="list-group-item"><strong>Email:</strong> @user?.Email</li>
-                    <li class="list-group-item"><strong>Role:</strong> <span class="badge bg-primary">@user?.Role?.RoleName</span></li>
-                    <li class="list-group-item"><strong>Status:</strong> @(user?.IsActive == true ? "Active" : "Inactive")</li>
+                    <li class="list-group-item"><strong>@L["Auth.Username"]:</strong> @user?.Username</li>
+                    <li class="list-group-item"><strong>@L["Auth.Email"]:</strong> @user?.Email</li>
+                    <li class="list-group-item"><strong>@L["Auth.Role"]:</strong> <span class="badge bg-primary">@user?.Role?.RoleName</span></li>
+                    <li class="list-group-item"><strong>@L["Common.Status"]:</strong> @(user?.IsActive == true ? L["Common.Active"].Value : L["Common.Inactive"].Value)</li>
                 </ul>
             </div>
         </div>
@@ -25,28 +25,28 @@
             @if (employee != null)
             {
                 <div class="card mb-3">
-                    <div class="card-header">Employee record</div>
+                    <div class="card-header">@L["Employee.Record"]</div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Name:</strong> @employee.FullName</li>
-                        <li class="list-group-item"><strong>Position:</strong> @employee.Position</li>
-                        <li class="list-group-item"><strong>Department:</strong> @(employee.Department?.DepartmentName ?? "—")</li>
-                        <li class="list-group-item"><strong>Shift:</strong> @employee.Shift</li>
+                        <li class="list-group-item"><strong>@L["Employee.FullName"]:</strong> @employee.FullName</li>
+                        <li class="list-group-item"><strong>@L["Employee.Position"]:</strong> @employee.Position</li>
+                        <li class="list-group-item"><strong>@L["Employee.Department"]:</strong> @(employee.Department?.DepartmentName ?? "—")</li>
+                        <li class="list-group-item"><strong>@L["Employee.Shift"]:</strong> @employee.Shift</li>
                     </ul>
                     <div class="card-footer">
-                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.EmployeeId" class="btn btn-sm btn-outline-primary">View full profile</a>
+                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.EmployeeId" class="btn btn-sm btn-outline-primary">@L["Auth.ViewFullProfile"]</a>
                     </div>
                 </div>
             }
             else
             {
-                <div class="alert alert-warning">No employee profile linked yet. Contact an administrator.</div>
+                <div class="alert alert-warning">@L["Auth.NoEmployeeProfile"]</div>
             }
 
             <div class="card">
-                <div class="card-header">My recent stock activity</div>
+                <div class="card-header">@L["Auth.RecentStockActivity"]</div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
-                        <thead><tr><th>Date</th><th>Type</th><th>Product</th><th>Qty</th></tr></thead>
+                        <thead><tr><th>@L["Inventory.Col.Date"]</th><th>@L["Inventory.Col.Type"]</th><th>@L["Inventory.Col.Product"]</th><th>@L["Inventory.Col.Qty"]</th></tr></thead>
                         <tbody>
                         @foreach (var t in transactions)
                         {

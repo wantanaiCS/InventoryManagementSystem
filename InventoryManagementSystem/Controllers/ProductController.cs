@@ -3,6 +3,7 @@ using InventoryManagementSystem.Data;
 using InventoryManagementSystem.Helpers;
 using InventoryManagementSystem.Models;
 using InventoryManagementSystem.Services;
+using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +15,16 @@ namespace InventoryManagementSystem.Controllers
         private readonly IProductService _productService;
         private readonly ApplicationDbContext _context;
         private readonly IAuditService _auditService;
+        private readonly IStringLocalizer<SharedResource> _l;
 
         private const string FurnitureProductLine = "Furniture";
 
-        public ProductController(IProductService productService, ApplicationDbContext context, IAuditService auditService)
+        public ProductController(IProductService productService, ApplicationDbContext context, IAuditService auditService, IStringLocalizer<SharedResource> localizer)
         {
             _productService = productService;
             _context = context;
             _auditService = auditService;
+            _l = localizer;
         }
 
         private async Task<List<Category>> GetFurnitureCategoriesAsync()
@@ -70,10 +73,10 @@ namespace InventoryManagementSystem.Controllers
         public async Task<IActionResult> Create([Bind("ProductCode,ProductName,CategoryId,Price,CurrentStock,Description,Material,Color,WidthCm,DepthCm,HeightCm,Unit,WarehouseLocation")] Product product)
         {
             if (await _productService.GetProductByCodeAsync(product.ProductCode) != null)
-                ModelState.AddModelError("ProductCode", "รหัสสินค้านี้มีในระบบแล้ว");
+                ModelState.AddModelError("ProductCode", _l["Product.Error.CodeExists"]);
 
             if (product.CategoryId <= 0)
-                ModelState.AddModelError("CategoryId", "กรุณาเลือกกลุ่มเฟอร์นิเจอร์");
+                ModelState.AddModelError("CategoryId", _l["Product.Error.CategoryRequired"]);
 
             if (ModelState.IsValid)
             {
@@ -81,7 +84,7 @@ namespace InventoryManagementSystem.Controllers
                 await _productService.AddProductAsync(product);
                 var userId = HttpContext.Session.GetCurrentUserId() ?? 0;
                 await _auditService.LogAsync(userId, "CREATE", "Products", product.ProductId);
-                TempData["Success"] = "เพิ่มสินค้าเฟอร์นิเจอร์เรียบร้อยแล้ว";
+                TempData["Success"] = _l["Product.Success.Created"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
@@ -108,7 +111,7 @@ namespace InventoryManagementSystem.Controllers
 
             var existing = await _productService.GetProductByCodeAsync(product.ProductCode);
             if (existing != null && existing.ProductId != id)
-                ModelState.AddModelError("ProductCode", "รหัสสินค้านี้มีในระบบแล้ว");
+                ModelState.AddModelError("ProductCode", _l["Product.Error.CodeExists"]);
 
             if (ModelState.IsValid)
             {

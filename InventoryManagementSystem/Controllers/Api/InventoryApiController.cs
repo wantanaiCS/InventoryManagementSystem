@@ -8,11 +8,11 @@ namespace InventoryManagementSystem.Controllers.Api
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class InventoryController : ControllerBase
+    public class InventoryApiController : ControllerBase
     {
         private readonly IInventoryService _inventoryService;
 
-        public InventoryController(IInventoryService inventoryService)
+        public InventoryApiController(IInventoryService inventoryService)
         {
             _inventoryService = inventoryService;
         }

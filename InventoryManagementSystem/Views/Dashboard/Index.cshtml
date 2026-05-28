@@ -1,38 +1,38 @@
 @model InventoryManagementSystem.ViewModels.DashboardViewModel
 @{
-    ViewData["Title"] = "Operations Dashboard";
+    ViewData["Title"] = L["Dashboard.Title"];
     ViewData["UseFullWidthPage"] = true;
 }
 
 <div class="container-fluid mt-4">
     <partial name="_Alerts" />
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-chart-line"></i> Warehouse Operations Dashboard</h2>
+        <h2><i class="fas fa-chart-line"></i> @L["Dashboard.Title"]</h2>
         @if (Model.IsAdmin)
         {
             <div class="btn-group">
-                <a asp-controller="Export" asp-action="Employees" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> Export Employees</a>
-                <a asp-controller="Export" asp-action="InventoryHistory" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> Export Inventory</a>
+                <a asp-controller="Export" asp-action="Employees" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> @L["Dashboard.ExportEmployees"]</a>
+                <a asp-controller="Export" asp-action="InventoryHistory" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> @L["Dashboard.ExportInventory"]</a>
             </div>
         }
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-3"><div class="card bg-primary text-white"><div class="card-body"><h6>Products</h6><h3>@Model.TotalProducts</h3></div></div></div>
-        <div class="col-md-3"><div class="card bg-success text-white"><div class="card-body"><h6>Total Stock Units</h6><h3>@Model.TotalStock</h3></div></div></div>
-        <div class="col-md-3"><div class="card bg-info text-white"><div class="card-body"><h6>Active Employees</h6><h3>@Model.ActiveEmployees / @Model.TotalEmployees</h3></div></div></div>
-        <div class="col-md-3"><div class="card bg-warning text-dark"><div class="card-body"><h6>Transactions Today</h6><h3>@Model.TransactionsToday</h3><small>My activity: @Model.MyTransactionsToday</small></div></div></div>
+        <div class="col-md-3"><div class="card bg-primary text-white"><div class="card-body"><h6>@L["Dashboard.Products"]</h6><h3>@Model.TotalProducts</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-success text-white"><div class="card-body"><h6>@L["Dashboard.TotalStock"]</h6><h3>@Model.TotalStock</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-info text-white"><div class="card-body"><h6>@L["Dashboard.ActiveEmployees"]</h6><h3>@Model.ActiveEmployees / @Model.TotalEmployees</h3></div></div></div>
+        <div class="col-md-3"><div class="card bg-warning text-dark"><div class="card-body"><h6>@L["Dashboard.TransactionsToday"]</h6><h3>@Model.TransactionsToday</h3><small>@L["Dashboard.MyActivity"]: @Model.MyTransactionsToday</small></div></div></div>
     </div>
 
     @if (Model.MyPerformance != null)
     {
         <div class="card mb-4">
-            <div class="card-header"><i class="fas fa-user-check"></i> My performance (this week)</div>
+            <div class="card-header"><i class="fas fa-user-check"></i> @L["Dashboard.MyPerformance"]</div>
             <div class="card-body row">
-                <div class="col-md-3"><strong>@Model.MyPerformance.TransactionsThisWeek</strong><br />Transactions</div>
-                <div class="col-md-3"><strong>@Model.MyPerformance.TotalIn</strong><br />Units IN</div>
-                <div class="col-md-3"><strong>@Model.MyPerformance.TotalOut</strong><br />Units OUT</div>
-                <div class="col-md-3"><strong>@Model.MyPerformance.TopProductName</strong><br />Top product</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TransactionsThisWeek</strong><br />@L["Dashboard.Transactions"]</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TotalIn</strong><br />@L["Dashboard.UnitsIN"]</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TotalOut</strong><br />@L["Dashboard.UnitsOUT"]</div>
+                <div class="col-md-3"><strong>@Model.MyPerformance.TopProductName</strong><br />@L["Dashboard.TopProduct"]</div>
             </div>
         </div>
     }
@@ -40,7 +40,7 @@
     <div class="row g-4">
         <div class="col-lg-6">
             <div class="card h-100">
-                <div class="card-header text-danger"><i class="fas fa-exclamation-triangle"></i> Low stock (≤ 5)</div>
+                <div class="card-header text-danger"><i class="fas fa-exclamation-triangle"></i> @L["Dashboard.LowStock"]</div>
                 <div class="card-body p-0">
                     @if (Model.LowStockProducts.Any())
                     {
@@ -56,14 +56,14 @@
                     }
                     else
                     {
-                        <p class="p-3 text-muted mb-0">All products above low-stock threshold.</p>
+                        <p class="p-3 text-muted mb-0">@L["Dashboard.LowStockAll"]</p>
                     }
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="card h-100">
-                <div class="card-header"><i class="fas fa-bell"></i> Notifications</div>
+                <div class="card-header"><i class="fas fa-bell"></i> @L["Dashboard.Notifications"]</div>
                 <div class="card-body p-0">
                     @if (Model.Notifications.Any())
                     {
@@ -76,7 +76,7 @@
                                         <form asp-action="MarkNotificationRead" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="id" value="@n.NotificationId" />
-                                            <button type="submit" class="btn btn-link btn-sm p-0">Mark read</button>
+                                            <button type="submit" class="btn btn-link btn-sm p-0">@L["Dashboard.MarkRead"]</button>
                                         </form>
                                     </div>
                                     <small>@n.Message</small>
@@ -86,7 +86,7 @@
                     }
                     else
                     {
-                        <p class="p-3 text-muted mb-0">No unread notifications.</p>
+                        <p class="p-3 text-muted mb-0">@L["Dashboard.NoNotifications"]</p>
                     }
                 </div>
             </div>
@@ -95,8 +95,8 @@
 
     <div class="card mt-4">
         <div class="card-header d-flex justify-content-between">
-            <span><i class="fas fa-history"></i> Recent inventory transactions</span>
-            <a asp-controller="Inventory" asp-action="Index" class="btn btn-sm btn-outline-primary">View all</a>
+            <span><i class="fas fa-history"></i> @L["Dashboard.RecentTransactions"]</span>
+            <a asp-controller="Inventory" asp-action="Index" class="btn btn-sm btn-outline-primary">@L["Dashboard.ViewAll"]</a>
         </div>
         <div class="table-responsive">
             <table class="table table-sm mb-0">

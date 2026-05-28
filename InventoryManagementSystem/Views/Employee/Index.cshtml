@@ -2,7 +2,7 @@
 @using InventoryManagementSystem.ViewModels
 @{
     ViewData["UseFullWidthPage"] = true;
-    ViewData["Title"] = "Employee Management";
+    ViewData["Title"] = L["Employee.Title"];
     var filter = ViewBag.Filter as EmployeeFilterViewModel ?? new EmployeeFilterViewModel();
     var departments = ViewBag.Departments as IEnumerable<InventoryManagementSystem.Models.Department> ?? Enumerable.Empty<InventoryManagementSystem.Models.Department>();
     var isAdmin = ViewBag.IsAdmin as bool? ?? false;
@@ -12,29 +12,29 @@
 <div class="container-fluid mt-4">
     <partial name="_Alerts" />
     <div class="row mb-3">
-        <div class="col-md-6"><h2><i class="fas fa-users"></i> Employees</h2></div>
+        <div class="col-md-6"><h2><i class="fas fa-users"></i> @L["Employee.Title"]</h2></div>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-6">
             <div class="card border-primary h-100">
                 <div class="card-header bg-primary text-white">
-                    <i class="fas fa-user-shield"></i> ระบบที่ 1 — Admin ลงทะเบียน (Manual)
+                    <i class="fas fa-user-shield"></i> @L["Employee.System1Title"]
                 </div>
                 <div class="card-body">
-                    <p class="small text-muted mb-2">ใช้ในองค์กรจริงเมื่อ HR/Admin กรอกข้อมูลพนักงานเอง หรือผูกบัญชีที่มีอยู่แล้ว</p>
+                    <p class="small text-muted mb-2">@L["Employee.System1Desc"]</p>
                     @if (isAdmin)
                     {
-                        <a asp-action="Onboard" class="btn btn-success btn-sm me-1"><i class="fas fa-magic"></i> Onboarding Wizard</a>
-                        <a asp-action="Create" class="btn btn-primary btn-sm me-1"><i class="fas fa-user-plus"></i> Add Employee</a>
+                        <a asp-action="Onboard" class="btn btn-success btn-sm me-1"><i class="fas fa-magic"></i> @L["Employee.Onboarding"]</a>
+                        <a asp-action="Create" class="btn btn-primary btn-sm me-1"><i class="fas fa-user-plus"></i> @L["Employee.Create"]</a>
                         <a asp-action="PendingApprovals" class="btn btn-warning btn-sm">
-                            <i class="fas fa-clock"></i> Pending (@pendingCount)
+                            <i class="fas fa-clock"></i> @L["Employee.PendingApprovals"] (@pendingCount)
                         </a>
                     }
                     else
                     {
-                        <p class="mb-0 text-warning"><i class="fas fa-lock"></i> ต้อง login เป็น <strong>Admin</strong> จึงจะเห็นปุ่มเพิ่มพนักงาน</p>
-                        <p class="small mt-2 mb-0">ตั้ง RoleId = 1 ในตาราง Users แล้ว Logout/Login ใหม่</p>
+                        <p class="mb-0 text-warning"><i class="fas fa-lock"></i> @L["Employee.AdminOnlyHint"]</p>
+                        <p class="small mt-2 mb-0">@L["Employee.AdminRoleHint"]</p>
                     }
                 </div>
             </div>
@@ -42,12 +42,12 @@
         <div class="col-md-6">
             <div class="card border-success h-100">
                 <div class="card-header bg-success text-white">
-                    <i class="fas fa-robot"></i> ระบบที่ 2 — พนักงานสมัครเอง (Auto)
+                    <i class="fas fa-robot"></i> @L["Employee.System2Title"]
                 </div>
                 <div class="card-body">
-                    <p class="small text-muted mb-2">User สมัครบัญชี → กรอกโปรไฟล์พนักงาน → รอ Admin อนุมัติที่เมนู Pending</p>
+                    <p class="small text-muted mb-2">@L["Employee.System2Desc"]</p>
                     <a asp-action="ApplyProfile" class="btn btn-outline-success btn-sm">
-                        <i class="fas fa-id-card"></i> สมัครโปรไฟล์พนักงาน (Self-Service)
+                        <i class="fas fa-id-card"></i> @L["Employee.ApplyProfile"]
                     </a>
                 </div>
             </div>
@@ -57,18 +57,18 @@
     @if (isAdmin)
     {
         <div class="text-end mb-2">
-            <a asp-controller="Export" asp-action="Employees" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> Export</a>
+            <a asp-controller="Export" asp-action="Employees" class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel"></i> @L["Common.Export"]</a>
         </div>
     }
 
     <form method="get" class="card card-body mb-3">
         <div class="row g-2">
             <div class="col-md-3">
-                <input name="SearchTerm" class="form-control" placeholder="Search..." value="@filter.SearchTerm" />
+                <input name="SearchTerm" class="form-control" placeholder="@L["Common.Search"]..." value="@filter.SearchTerm" />
             </div>
             <div class="col-md-2">
                 <select name="DepartmentId" class="form-select">
-                    <option value="">All departments</option>
+                    <option value="">@L["Common.AllStatus"]</option>
                     @foreach (var d in departments)
                     {
                         <option value="@d.DepartmentId" selected="@(filter.DepartmentId == d.DepartmentId)">@d.DepartmentName</option>
@@ -77,21 +77,21 @@
             </div>
             <div class="col-md-2">
                 <select name="IsActive" class="form-select">
-                    <option value="">All status</option>
-                    <option value="true" selected="@(filter.IsActive == true)">Active</option>
-                    <option value="false" selected="@(filter.IsActive == false)">Inactive</option>
+                    <option value="">@L["Common.AllStatus"]</option>
+                    <option value="true" selected="@(filter.IsActive == true)">@L["Common.Active"]</option>
+                    <option value="false" selected="@(filter.IsActive == false)">@L["Common.Inactive"]</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-secondary w-100">Filter</button>
+                <button type="submit" class="btn btn-secondary w-100">@L["Common.Filter"]</button>
             </div>
             <div class="col-md-1">
-                <a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a>
+                <a asp-action="Index" class="btn btn-outline-secondary w-100">@L["Common.Clear"]</a>
             </div>
         </div>
     </form>
 
-    <p class="text-muted small">แสดงเฉพาะพนักงานที่ <strong>อนุมัติแล้ว (Approved)</strong></p>
+    <p class="text-muted small">@L["Employee.ShowApprovedOnly"]</p>
 
     @if (Model.Items.Any())
     {
@@ -99,13 +99,13 @@
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Department</th>
-                        <th>Source</th>
-                        <th>Status</th>
-                        <th>Account</th>
-                        <th>Actions</th>
+                        <th>@L["Employee.FullName"]</th>
+                        <th>@L["Employee.Position"]</th>
+                        <th>@L["Employee.Department"]</th>
+                        <th>@L["Employee.Source"]</th>
+                        <th>@L["Common.Status"]</th>
+                        <th>@L["Employee.Account"]</th>
+                        <th>@L["Common.Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,13 +117,13 @@
                         <td>@e.Department?.DepartmentName</td>
                         <td>
                             @if (e.RegistrationSource == "SelfService")
-                            { <span class="badge bg-info">Auto</span> }
+                            { <span class="badge bg-info">@L["Employee.SourceAuto"]</span> }
                             else
-                            { <span class="badge bg-primary">Admin</span> }
+                            { <span class="badge bg-primary">@L["Employee.SourceAdmin"]</span> }
                         </td>
                         <td>
-                            @if (e.IsActive) { <span class="badge bg-success">Active</span> }
-                            else { <span class="badge bg-secondary">Inactive</span> }
+                            @if (e.IsActive) { <span class="badge bg-success">@L["Common.Active"]</span> }
+                            else { <span class="badge bg-secondary">@L["Common.Inactive"]</span> }
                         </td>
                         <td>@e.User?.Username</td>
                         <td>
@@ -143,18 +143,18 @@
             <ul class="pagination">
                 @if (Model.HasPrevious)
                 {
-                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-Page="@(Model.Page - 1)" asp-route-SearchTerm="@filter.SearchTerm">Previous</a></li>
+                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-Page="@(Model.Page - 1)" asp-route-SearchTerm="@filter.SearchTerm">@L["Inventory.Pager.Previous"]</a></li>
                 }
-                <li class="page-item disabled"><span class="page-link">Page @Model.Page / @Model.TotalPages</span></li>
+                <li class="page-item disabled"><span class="page-link">@string.Format(L["Inventory.Pager.PageOf"], Model.Page, Model.TotalPages)</span></li>
                 @if (Model.HasNext)
                 {
-                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-Page="@(Model.Page + 1)" asp-route-SearchTerm="@filter.SearchTerm">Next</a></li>
+                    <li class="page-item"><a class="page-link" asp-action="Index" asp-route-Page="@(Model.Page + 1)" asp-route-SearchTerm="@filter.SearchTerm">@L["Inventory.Pager.Next"]</a></li>
                 }
             </ul>
         </nav>
     }
     else
     {
-        <div class="alert alert-info">No approved employees yet.</div>
+        <div class="alert alert-info">@L["Employee.NoApprovedEmployees"]</div>
     }
 </div>

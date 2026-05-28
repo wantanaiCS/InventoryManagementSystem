@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Default (neutral) language: Thai -->
+  <data name="App.Title" xml:space="preserve"><value>ระบบจัดการคลังสินค้า</value></data>
+  <data name="Nav.Dashboard" xml:space="preserve"><value>แดชบอร์ด</value></data>
+  <data name="Nav.Products" xml:space="preserve"><value>สินค้า</value></data>
+  <data name="Nav.Inventory" xml:space="preserve"><value>สต็อก</value></data>
+  <data name="Nav.Employees" xml:space="preserve"><value>พนักงาน</value></data>
+  <data name="Nav.Home" xml:space="preserve"><value>หน้าหลัก</value></data>
+
+  <data name="Auth.Login" xml:space="preserve"><value>เข้าสู่ระบบ</value></data>
+  <data name="Auth.Register" xml:space="preserve"><value>สมัครสมาชิก</value></data>
+  <data name="Auth.Logout" xml:space="preserve"><value>ออกจากระบบ</value></data>
+  <data name="Auth.MyProfile" xml:space="preserve"><value>โปรไฟล์ของฉัน</value></data>
+
+  <data name="Employee.Onboarding" xml:space="preserve"><value>เพิ่มพนักงาน (Onboarding)</value></data>
+
+  <data name="Lang.Label" xml:space="preserve"><value>ภาษา</value></data>
+  <data name="Lang.Thai" xml:space="preserve"><value>ไทย</value></data>
+  <data name="Lang.English" xml:space="preserve"><value>English</value></data>
+
+  <data name="Common.Save" xml:space="preserve"><value>บันทึก</value></data>
+  <data name="Common.Cancel" xml:space="preserve"><value>ยกเลิก</value></data>
+
+  <data name="Inventory.HistoryTitle" xml:space="preserve"><value>ประวัติสต็อก</value></data>
+  <data name="Inventory.TransactionsTitle" xml:space="preserve"><value>รายการสต็อก</value></data>
+  <data name="Inventory.Receive" xml:space="preserve"><value>รับเข้า</value></data>
+  <data name="Inventory.Dispense" xml:space="preserve"><value>จ่ายออก</value></data>
+  <data name="Inventory.Filter.All" xml:space="preserve"><value>ทั้งหมด</value></data>
+  <data name="Inventory.Filter.In" xml:space="preserve"><value>รับเข้า</value></data>
+  <data name="Inventory.Filter.Out" xml:space="preserve"><value>จ่ายออก</value></data>
+  <data name="Inventory.Col.Date" xml:space="preserve"><value>วันที่</value></data>
+  <data name="Inventory.Col.Type" xml:space="preserve"><value>ประเภท</value></data>
+  <data name="Inventory.Col.Product" xml:space="preserve"><value>สินค้า</value></data>
+  <data name="Inventory.Col.Qty" xml:space="preserve"><value>จำนวน</value></data>
+  <data name="Inventory.Col.By" xml:space="preserve"><value>ผู้ทำรายการ</value></data>
+  <data name="Inventory.Col.Shift" xml:space="preserve"><value>กะ</value></data>
+  <data name="Inventory.Col.Notes" xml:space="preserve"><value>หมายเหตุ</value></data>
+  <data name="Inventory.Pager.Previous" xml:space="preserve"><value>ก่อนหน้า</value></data>
+  <data name="Inventory.Pager.Next" xml:space="preserve"><value>ถัดไป</value></data>
+  <data name="Inventory.Pager.PageOf" xml:space="preserve"><value>หน้า {0} / {1}</value></data>
+
+  <data name="Inventory.ReceiveTitle" xml:space="preserve"><value>รับสินค้าเข้า (IN)</value></data>
+  <data name="Inventory.DispenseTitle" xml:space="preserve"><value>จ่ายสินค้าออก (OUT)</value></data>
+  <data name="Inventory.Form.Product" xml:space="preserve"><value>สินค้า</value></data>
+  <data name="Inventory.Form.Select" xml:space="preserve"><value>-- เลือก --</value></data>
+  <data name="Inventory.Form.Stock" xml:space="preserve"><value>คงเหลือ</value></data>
+  <data name="Inventory.Form.Quantity" xml:space="preserve"><value>จำนวน</value></data>
+  <data name="Inventory.Form.Shift" xml:space="preserve"><value>กะ</value></data>
+  <data name="Inventory.Form.Notes" xml:space="preserve"><value>หมายเหตุ</value></data>
+  <data name="Inventory.Form.RecordIn" xml:space="preserve"><value>บันทึกรับเข้า</value></data>
+  <data name="Inventory.Form.RecordOut" xml:space="preserve"><value>บันทึกจ่ายออก</value></data>
+
+  <data name="Inventory.Success.Receive" xml:space="preserve"><value>บันทึกรับเข้าเรียบร้อยแล้ว</value></data>
+  <data name="Inventory.Success.Dispense" xml:space="preserve"><value>บันทึกจ่ายออกเรียบร้อยแล้ว</value></data>
+  <data name="Inventory.Error.TransactionFailed" xml:space="preserve"><value>ทำรายการไม่สำเร็จ</value></data>
+  <data name="Inventory.Error.TypeInvalid" xml:space="preserve"><value>ประเภทต้องเป็น IN หรือ OUT</value></data>
+  <data name="Inventory.Error.QuantityInvalid" xml:space="preserve"><value>จำนวนต้องมากกว่า 0</value></data>
+  <data name="Inventory.Error.ProductNotFound" xml:space="preserve"><value>ไม่พบสินค้า</value></data>
+  <data name="Inventory.Error.InsufficientStock" xml:space="preserve"><value>สต็อกไม่พอ (คงเหลือ: {0})</value></data>
+  <data name="Inventory.Error.EmployeePending" xml:space="preserve"><value>โปรไฟล์พนักงานของคุณรอการอนุมัติ กรุณารอผู้ดูแลระบบ</value></data>
+  <data name="Inventory.Error.CategoryNotAssigned" xml:space="preserve"><value>คุณไม่ได้รับมอบหมายให้จัดการหมวดสินค้านี้</value></data>
+
+  <data name="Auth.Error.Required" xml:space="preserve"><value>กรุณากรอกชื่อผู้ใช้และรหัสผ่าน</value></data>
+  <data name="Auth.Error.InvalidCredentials" xml:space="preserve"><value>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</value></data>
+  <data name="Auth.Error.AllFieldsRequired" xml:space="preserve"><value>กรุณากรอกข้อมูลให้ครบทุกช่อง</value></data>
+  <data name="Auth.Error.PasswordMismatch" xml:space="preserve"><value>รหัสผ่านไม่ตรงกัน</value></data>
+  <data name="Auth.Error.PasswordMinLength" xml:space="preserve"><value>รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร</value></data>
+  <data name="Auth.Error.UsernameExists" xml:space="preserve"><value>ชื่อผู้ใช้นี้มีในระบบแล้ว</value></data>
+  <data name="Auth.Error.EmailExists" xml:space="preserve"><value>อีเมลนี้มีในระบบแล้ว</value></data>
+  <data name="Auth.Error.RegistrationFailed" xml:space="preserve"><value>สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</value></data>
+  <data name="Auth.Info.AccountCreated" xml:space="preserve"><value>สร้างบัญชีสำเร็จ กรุณากรอกโปรไฟล์พนักงาน (สมัครเอง) หรือรอผู้ดูแลระบบเพิ่มข้อมูล</value></data>
+
+  <data name="Product.Error.CodeExists" xml:space="preserve"><value>รหัสสินค้านี้มีในระบบแล้ว</value></data>
+  <data name="Product.Error.CategoryRequired" xml:space="preserve"><value>กรุณาเลือกกลุ่มเฟอร์นิเจอร์</value></data>
+  <data name="Product.Success.Created" xml:space="preserve"><value>เพิ่มสินค้าเรียบร้อยแล้ว</value></data>
+
+  <data name="Employee.Error.UserRequired" xml:space="preserve"><value>กรุณาเลือกบัญชีผู้ใช้</value></data>
+  <data name="Employee.Error.UserAlreadyHasEmployee" xml:space="preserve"><value>บัญชีนี้มีข้อมูลพนักงานอยู่แล้ว</value></data>
+  <data name="Employee.Error.CreateFailed" xml:space="preserve"><value>เกิดข้อผิดพลาดระหว่างสร้างพนักงาน</value></data>
+  <data name="Employee.Success.Created" xml:space="preserve"><value>สร้างพนักงานเรียบร้อยแล้ว</value></data>
+  <data name="Employee.Success.Updated" xml:space="preserve"><value>อัปเดตพนักงานเรียบร้อยแล้ว</value></data>
+  <data name="Employee.Success.Deactivated" xml:space="preserve"><value>ปิดการใช้งานพนักงานแล้ว (soft delete)</value></data>
+  <data name="Employee.Info.PendingApproval" xml:space="preserve"><value>คำขอสมัครของคุณกำลังรอผู้ดูแลระบบอนุมัติ</value></data>
+  <data name="Employee.Success.ApplicationSubmitted" xml:space="preserve"><value>ส่งคำขอเรียบร้อย ผู้ดูแลระบบจะตรวจสอบและอนุมัติ</value></data>
+  <data name="Employee.Success.Approved" xml:space="preserve"><value>อนุมัติพนักงานเรียบร้อยแล้ว</value></data>
+  <data name="Employee.Success.Rejected" xml:space="preserve"><value>ปฏิเสธคำขอเรียบร้อยแล้ว</value></data>
+  <data name="Employee.Success.OnboardComplete" xml:space="preserve"><value>ทำ Onboarding สำเร็จสำหรับ {0}</value></data>
+  <data name="Employee.Success.Activated" xml:space="preserve"><value>เปิดใช้งานพนักงานแล้ว</value></data>
+  <data name="Employee.Success.DeactivatedSimple" xml:space="preserve"><value>ปิดการใช้งานพนักงานแล้ว</value></data>
+  <data name="Employee.Error.SelfRegistrationFailed" xml:space="preserve"><value>ส่งคำขอไม่สำเร็จ</value></data>
+  <data name="Common.Status" xml:space="preserve"><value>สถานะ</value></data>
+  <data name="Common.Actions" xml:space="preserve"><value>การทำงาน</value></data>
+  <data name="Common.NoneOption" xml:space="preserve"><value>-- ไม่มี --</value></data>
+  <data name="Common.View" xml:space="preserve"><value>ดู</value></data>
+  <data name="Common.Back" xml:space="preserve"><value>กลับ</value></data>
+
+  <data name="Employee.System1Title" xml:space="preserve"><value>ระบบที่ 1 — Admin ลงทะเบียน (Manual)</value></data>
+  <data name="Employee.System1Desc" xml:space="preserve"><value>ใช้ในองค์กรจริงเมื่อ HR/Admin กรอกข้อมูลพนักงานเอง หรือผูกบัญชีที่มีอยู่แล้ว</value></data>
+  <data name="Employee.AdminOnlyHint" xml:space="preserve"><value>ต้อง login เป็น Admin จึงจะเห็นปุ่มเพิ่มพนักงาน</value></data>
+  <data name="Employee.AdminRoleHint" xml:space="preserve"><value>ตั้ง RoleId = 1 ในตาราง Users แล้ว Logout/Login ใหม่</value></data>
+  <data name="Employee.System2Title" xml:space="preserve"><value>ระบบที่ 2 — พนักงานสมัครเอง (Auto)</value></data>
+  <data name="Employee.System2Desc" xml:space="preserve"><value>User สมัครบัญชี → กรอกโปรไฟล์พนักงาน → รอ Admin อนุมัติที่เมนู Pending</value></data>
+  <data name="Employee.ApplyProfile" xml:space="preserve"><value>สมัครโปรไฟล์พนักงาน (Self-Service)</value></data>
+  <data name="Employee.ShowApprovedOnly" xml:space="preserve"><value>แสดงเฉพาะพนักงานที่อนุมัติแล้ว (Approved)</value></data>
+  <data name="Employee.Source" xml:space="preserve"><value>แหล่งที่มา</value></data>
+  <data name="Employee.SourceAuto" xml:space="preserve"><value>อัตโนมัติ</value></data>
+  <data name="Employee.SourceAdmin" xml:space="preserve"><value>แอดมิน</value></data>
+  <data name="Employee.NoApprovedEmployees" xml:space="preserve"><value>ยังไม่มีพนักงานที่อนุมัติแล้ว</value></data>
+  <data name="Employee.OnboardWizardTitle" xml:space="preserve"><value>ตัวช่วย Onboarding พนักงาน</value></data>
+  <data name="Employee.OnboardWizardDesc" xml:space="preserve"><value>สร้างบัญชีผู้ใช้ + โปรไฟล์พนักงาน + สิทธิ์หมวดคลัง ในขั้นตอนเดียว</value></data>
+  <data name="Employee.OnboardStep1" xml:space="preserve"><value>ขั้นตอนที่ 1 — บัญชีผู้ใช้</value></data>
+  <data name="Employee.OnboardStep2" xml:space="preserve"><value>ขั้นตอนที่ 2 — โปรไฟล์พนักงาน</value></data>
+  <data name="Employee.OnboardStep3" xml:space="preserve"><value>ขั้นตอนที่ 3 — หมวดหมู่คลังสินค้า</value></data>
+  <data name="Employee.Manager" xml:space="preserve"><value>หัวหน้างาน</value></data>
+  <data name="Employee.Phone" xml:space="preserve"><value>เบอร์โทร</value></data>
+  <data name="Employee.Address" xml:space="preserve"><value>ที่อยู่</value></data>
+  <data name="Employee.CompleteOnboarding" xml:space="preserve"><value>ทำ Onboarding ให้เสร็จ</value></data>
+  <data name="Employee.Record" xml:space="preserve"><value>ข้อมูลพนักงาน</value></data>
+
+  <data name="Auth.MyProfileTitle" xml:space="preserve"><value>โปรไฟล์ของฉัน</value></data>
+  <data name="Auth.Account" xml:space="preserve"><value>บัญชีผู้ใช้</value></data>
+  <data name="Auth.Role" xml:space="preserve"><value>บทบาท</value></data>
+  <data name="Auth.ViewFullProfile" xml:space="preserve"><value>ดูโปรไฟล์เต็ม</value></data>
+  <data name="Auth.NoEmployeeProfile" xml:space="preserve"><value>ยังไม่มีโปรไฟล์พนักงานที่เชื่อมกับบัญชีนี้ กรุณาติดต่อผู้ดูแลระบบ</value></data>
+  <data name="Auth.RecentStockActivity" xml:space="preserve"><value>กิจกรรมสต็อกล่าสุดของฉัน</value></data>
+</root>
+

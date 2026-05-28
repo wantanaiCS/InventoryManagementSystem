@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = L["Auth.MyProfile"];
 }
 
 <div class="container mt-5">
@@ -8,13 +8,13 @@
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
-                        <i class="fas fa-user-circle"></i> My Profile
+                        <i class="fas fa-user-circle"></i> @L["Auth.MyProfile"]
                     </h4>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <p class="text-muted"><strong>Username:</strong></p>
+                            <p class="text-muted"><strong>@L["Auth.Username"]:</strong></p>
                         </div>
                         <div class="col-md-9">
                             <p>@ViewBag.Username</p>
@@ -23,7 +23,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <p class="text-muted"><strong>Role:</strong></p>
+                            <p class="text-muted"><strong>@L["Employee.ApprovalStatus"]:</strong></p>
                         </div>
                         <div class="col-md-9">
                             <p>
@@ -36,10 +36,10 @@
 
                     <div class="d-flex gap-2">
                         <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
-                            <i class="fas fa-home"></i> Back to Home
+                            <i class="fas fa-home"></i> @L["Nav.Home"]
                         </a>
                         <a href="@Url.Action("Logout")" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                            <i class="fas fa-sign-out-alt"></i> @L["Auth.Logout"]
                         </a>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = L["Auth.Register"];
     ViewData["UseFullWidthPage"] = true;
     ViewData["BodyClass"] = "auth-body";
 
@@ -12,16 +12,16 @@
 }
 
 <section class="auth-shell" aria-labelledby="auth-title">
-    <aside class="auth-visual" aria-label="Inventory account overview">
+    <aside class="auth-visual" aria-label="@L["Auth.SystemOverview"]">
         <div class="auth-brand">
             <span class="auth-brand-mark">
                 <i class="fas fa-warehouse" aria-hidden="true"></i>
             </span>
-            <span>Inventory System</span>
+            <span>@L["App.Title"]</span>
         </div>
 
         <div class="auth-visual-copy">
-            <p class="auth-eyebrow">Team onboarding</p>
+            <p class="auth-eyebrow">@L["Employee.Onboarding"]</p>
             <h1>Create access that keeps every stock movement accountable.</h1>
             <p>New users start with employee access so inventory workflows stay organized from day one.</p>
         </div>
@@ -49,8 +49,8 @@
                     <i class="fas fa-user-plus" aria-hidden="true"></i>
                 </span>
                 <div>
-                    <p class="auth-kicker">Get started</p>
-                    <h2 id="auth-title">Create your account</h2>
+                    <p class="auth-kicker">@L["Home.GetStarted"]</p>
+                    <h2 id="auth-title">@L["Auth.RegisterTitle"]</h2>
                 </div>
             </div>
 
@@ -58,31 +58,29 @@
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger auth-validation" role="alert"></div>
 
                 <div class="auth-field">
-                    <label for="username">Username <span>*</span></label>
+                    <label for="username">@L["Auth.Username"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-user" aria-hidden="true"></i>
                         <input id="username"
                                type="text"
                                name="username"
                                class="form-control"
-                               placeholder="Choose a username"
+                               placeholder="@L["Auth.EnterUsername"]"
                                value="@postedUsername"
                                autocomplete="username"
-                               aria-describedby="username-help"
                                required />
                     </div>
-                    <small id="username-help">Use a unique username for this workspace.</small>
                 </div>
 
                 <div class="auth-field">
-                    <label for="email">Email <span>*</span></label>
+                    <label for="email">@L["Auth.Email"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-envelope" aria-hidden="true"></i>
                         <input id="email"
                                type="email"
                                name="email"
                                class="form-control"
-                               placeholder="Enter your email"
+                               placeholder="@L["Auth.EnterEmail"]"
                                value="@postedEmail"
                                autocomplete="email"
                                required />
@@ -90,45 +88,43 @@
                 </div>
 
                 <div class="auth-field">
-                    <label for="password">Password <span>*</span></label>
+                    <label for="password">@L["Auth.Password"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-key" aria-hidden="true"></i>
                         <input id="password"
                                type="password"
                                name="password"
                                class="form-control"
-                               placeholder="At least 6 characters"
+                               placeholder="@L["Auth.PasswordMinLength"]"
                                autocomplete="new-password"
-                               aria-describedby="password-help"
                                minlength="6"
                                required />
                         <button class="auth-password-toggle"
                                 type="button"
                                 data-password-toggle
-                                aria-label="Show password"
+                                aria-label="@L["Auth.Password"]"
                                 aria-controls="password">
                             <i class="fas fa-eye" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <small id="password-help">Password must be at least 6 characters.</small>
                 </div>
 
                 <div class="auth-field">
-                    <label for="confirmPassword">Confirm Password <span>*</span></label>
+                    <label for="confirmPassword">@L["Auth.ConfirmPassword"] <span>*</span></label>
                     <div class="auth-input">
                         <i class="fas fa-shield-alt" aria-hidden="true"></i>
                         <input id="confirmPassword"
                                type="password"
                                name="confirmPassword"
                                class="form-control"
-                               placeholder="Confirm your password"
+                               placeholder="@L["Auth.ConfirmPasswordPlaceholder"]"
                                autocomplete="new-password"
                                minlength="6"
                                required />
                         <button class="auth-password-toggle"
                                 type="button"
                                 data-password-toggle
-                                aria-label="Show password"
+                                aria-label="@L["Auth.Password"]"
                                 aria-controls="confirmPassword">
                             <i class="fas fa-eye" aria-hidden="true"></i>
                         </button>
@@ -136,14 +132,14 @@
                 </div>
 
                 <button type="submit" class="auth-submit">
-                    <span>Create account</span>
+                    <span>@L["Auth.SignUp"]</span>
                     <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
 
             <p class="auth-switch">
-                Already have an account?
-                <a href="@Url.Action("Login")">Login</a>
+                @L["Auth.HaveAccount"]
+                <a href="@Url.Action("Login")">@L["Auth.Login"]</a>
             </p>
         </div>
     </div>

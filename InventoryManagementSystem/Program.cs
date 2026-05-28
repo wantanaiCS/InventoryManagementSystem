@@ -1,7 +1,9 @@
 using InventoryManagementSystem.Data;
 using InventoryManagementSystem.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,14 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-builder.Services.AddControllersWithViews();
+// Resources are embedded with base name "InventoryManagementSystem.SharedResource"
+// (see obj/*/InventoryManagementSystem.SharedResource.*.resources), so keep ResourcesPath empty.
+builder.Services.AddLocalization();
+
+builder.Services
+    .AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 builder.Services.AddControllers();
 
 builder.Services.AddDataProtection()
@@ -47,6 +56,24 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+var supportedCultures = new[]
+{
+    new CultureInfo("th-TH"),
+    new CultureInfo("en-US")
+};
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("th-TH"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    RequestCultureProviders =
+    [
+        new CookieRequestCultureProvider(),
+        new AcceptLanguageHeaderRequestCultureProvider()
+    ]
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
